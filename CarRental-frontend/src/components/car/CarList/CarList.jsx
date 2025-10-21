@@ -71,6 +71,17 @@ function CarList() {
         fuel: 'Petrol',
         gearbox: 'Automatic',
         passengers: 4
+      },
+      { 
+        id: 1, 
+        brand: 'Mercedes-Benz', 
+        model: 'CLS', 
+        price: 150, 
+        image: '/images/cars/mercedescls.jpg',
+        year: 2021,
+        fuel: 'Petrol',
+        gearbox: 'Automatic',
+        passengers: 4
       }
     ];
     
