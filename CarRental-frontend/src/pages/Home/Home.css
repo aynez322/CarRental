@@ -21,7 +21,7 @@
   color: #0f172a;
 }
 .hero__title--highlight {
-  color: #3ac0b7; /* Blue */
+  color: #3ac0b7;
 }
 
 .searchbar {
@@ -71,6 +71,9 @@
   border-radius: 28px;
   font-weight: 700;
   cursor: pointer;
+}
+.btn-primary:hover {
+  background-color: #3ac0b7;
 }
 
 .container {

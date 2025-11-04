@@ -51,16 +51,34 @@
 }
 
 .nav__login {
-  background: #2563eb;
+  background-color: #2563eb;
   color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 700;
+  transition: background-color 0.3s ease;
 }
 
+.nav__login:hover {
+  background-color: #3ac0b7;
+}
 
+.nav__admin {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav__admin:hover {
+  background-color: #3ac0b7;
+}
 
 @media (max-width: 600px) {
   .nav__container {

@@ -18,6 +18,7 @@ export default function NavBar() {
           <a href="/bookings" className="nav__link">My Bookings</a>
           <a href="#contact" className="nav__link">Contact</a>
           <button className="nav__login">Login</button>
+          <button className="nav__admin">Admin</button>
         </nav>
       </div>
     </header>
