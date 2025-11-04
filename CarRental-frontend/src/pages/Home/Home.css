@@ -20,6 +20,9 @@
   font-weight: 800;
   color: #0f172a;
 }
+.hero__title--highlight {
+  color: #3ac0b7; /* Blue */
+}
 
 .searchbar {
   display: flex;

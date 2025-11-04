@@ -24,7 +24,9 @@ export default function Home() {
 
       <section className="hero">
         <div className="hero__inner">
-          <h1 className="hero__title">Car Hire in Cluj-Napoca</h1>
+          <h1 className="hero__title">
+            Car Hire in <span className="hero__title--highlight">Cluj-Napoca</span>
+          </h1>
           
 
           <form className="searchbar" onSubmit={onSearch}>
