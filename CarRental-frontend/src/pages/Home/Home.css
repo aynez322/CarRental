@@ -1,0 +1,103 @@
+.home {
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  color: #111827;
+}
+
+.hero {
+  background: #f1f6fb;
+  padding: 60px 0 40px;
+  text-align: center;
+}
+
+.hero__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero__title {
+  font-size: 48px;
+  margin: 0 0 28px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.searchbar {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  align-items: flex-end;
+  background: white;
+  padding: 18px;
+  border-radius: 48px;
+  box-shadow: 0 10px 30px rgba(21, 41, 82, 0.08);
+  width: 90%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.searchbar__item {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.searchbar__item label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.searchbar__item input,
+.searchbar__item select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  min-width: 160px;
+}
+
+.searchbar__action {
+  align-self: center;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 28px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 34px auto;
+  padding: 0 16px 60px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+
+.hero__car {
+  margin-top: 28px;              
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero__car img {
+  width: 100%;
+  max-width: 920px;            
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(20,40,80,0.08));
+}
+
+@media (max-width: 640px) {
+  .hero__car img {
+    max-width: 360px;
+  }
+}
