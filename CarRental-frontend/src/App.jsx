@@ -1,11 +1,9 @@
+import React from 'react';
+import Home from './pages/Home/Home';
 import './App.css';
-import CarList from './components/car/CarList/CarList';
 
 function App() {
-  return (
-    <>
-    </>
-  );
+  return <Home />;
 }
 
 export default App;

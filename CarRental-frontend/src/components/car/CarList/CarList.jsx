@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
-import { CarCard } from '../CarCard/CarCard';
+import CarCard from '../CarCard/CarCard.jsx';
 import './CarList.css';
 
-function CarList() {
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api';
+
+
+function CarList({ filters = {} }) {
   const [cars, setCars] = useState([]);
-  useEffect(() => {
+  const [loading, setLoading] = useState(true);
+
     const mockCars = [
       { 
         id: 1, 
@@ -74,26 +78,61 @@ function CarList() {
       }
     ];
     
-    setCars(mockCars);
-    
-  }, []); 
+     useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    const params = new URLSearchParams();
+    if (filters.query) params.append('q', filters.query);
+    if (filters.location) params.append('location', filters.location);
+    if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params.append('dateTo', filters.dateTo);
+
+    fetch(`${API_BASE}/cars?${params.toString()}`)
+      .then(res => {
+        if (!res.ok) throw new Error('API response not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (!isMounted) return;
+        const list = Array.isArray(data) ? data : (data.cars || []);
+        const filtered = applyClientFilters(list, filters);
+        setCars(filtered);
+      })
+      .catch(() => {
+        const filtered = applyClientFilters(mockCars, filters);
+        if (isMounted) setCars(filtered);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => { isMounted = false; };
+  }, [filters]);
+
+  function applyClientFilters(list, filters) {
+    const q = (filters.query || '').trim().toLowerCase();
+    if (!q) return list;
+    return list.filter(c => {
+      const text = `${c.brand} ${c.model} ${c.year} ${c.plateNumber ?? ''}`.toLowerCase();
+      return text.includes(q);
+    });
+  }
+
   return (
-    <div className="car-list">
+    <div id="cars" className="car-list">
       <h2>Available Cars</h2>
-      <div className="car-grid">
-        {cars.map(car => (
-          <CarCard 
-            key={car.id} 
-            image={car.image} 
-            brand={car.brand} 
-            model={car.model} 
-            price={car.price} 
-            year={car.year} 
-            fuel={car.fuel} 
-            gearbox={car.gearbox} 
-            passengers={car.passengers}/>
-        ))}
-      </div>
+
+      {loading && <div className="carlist__loading">Loading cars...</div>}
+      {!loading && !cars.length && <div className="carlist__empty">No cars available.</div>}
+
+      {!loading && cars.length > 0 && (
+        <div className="car-grid">
+          {cars.map(car => (
+            <CarCard key={car.id} car={car} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

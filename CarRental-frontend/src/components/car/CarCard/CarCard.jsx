@@ -1,35 +1,63 @@
+import React from 'react';
 import { MdDateRange } from 'react-icons/md';
 import { BsFuelPumpFill } from 'react-icons/bs';
 import { TbManualGearbox } from 'react-icons/tb';
 import { IoMdPeople } from 'react-icons/io';
-import './CarCard.css'
-export function CarCard ( {image, brand, model, price, year, fuel, gearbox, passengers} ){
-    return (
-    <div className="car-card">
-      <img src={image} alt={`${brand} ${model}`} />
-      <div className="car-card-content">
-        <h3>{brand} {model}</h3>
+import './CarCard.css';
+
+export default function CarCard({ car }) {
+  const {
+    image = '/images/cars/placeholder.jpg',
+    brand = 'Unknown',
+    model = '',
+    price = 0,
+    year = '',
+    fuel = '',
+    gearbox = '',
+    passengers = ''
+  } = car || {};
+
+  const formattedPrice = typeof price === 'number' ? price.toFixed(2) : price;
+
+  return (
+    <div className="carcard">
+      <div className="carcard__image">
+        <img
+          src={image}
+          alt={`${brand} ${model}`}
+          onError={(e) => { e.currentTarget.src = '/images/cars/placeholder.jpg'; }}
+        />
+      </div>
+
+      <div className="carcard__body">
+        <div className="carcard__title">{brand} {model}</div>
+        <div className="carcard__meta">{year}</div>
+
         <div className="car-details-list">
-          <p>
+          <div className="car-detail">
             <MdDateRange className="icon" />
             <span>{year}</span>
-          </p>
-          <p>
+          </div>
+          <div className="car-detail">
             <BsFuelPumpFill className="icon" />
             <span>{fuel}</span>
-          </p>
-          <p>
+          </div>
+          <div className="car-detail">
             <TbManualGearbox className="icon" />
             <span>{gearbox}</span>
-          </p>
-          <p>
+          </div>
+          <div className="car-detail">
             <IoMdPeople className="icon" />
-            <span>{passengers} Passengers</span>
-          </p>
+            <span>{passengers} passengers</span>
+          </div>
         </div>
-        
-        <p className="price">${price}/day</p>
-        <button>Book Now</button>
+
+        <div className="carcard__footer">
+          <div className="carcard__price">{formattedPrice} lei/day</div>
+          <div>
+            <button className="btn-primary">Book Now</button>
+          </div>
+        </div>
       </div>
     </div>
   );

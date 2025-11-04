@@ -1,81 +1,98 @@
-.car-card {
-  background: rgb(201, 175, 150);
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.carcard {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e6e9ee;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  box-shadow: 0 6px 18px rgba(20,40,80,0.04);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.carcard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(20,40,80,0.08);
 }
 
-.car-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+.carcard__image {
+  height: 160px;
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
 }
 
-.car-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+.carcard__image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
-.car-card-content {
-  padding: 15px;
+.carcard__body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
-.car-card h3 {
-  margin: 1px 0;
-  color: #333;
-  font-size: 1.5rem;
-  font-family:Arial, Helvetica, sans-serif;
+.carcard__title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.carcard__meta {
+  color: #6b7280;
+  font-size: 13px;
 }
 
 .car-details-list {
-  margin: 15px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto ;
-  gap: 8px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
 }
-
-.car-details-list p {
+.car-detail {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin: 0;
-  color: #555;
-  font-size: 1rem;
-  font-family: Arial, Helvetica, sans-serif;
+  gap: 6px;
+  color: #374151;
+  font-size: 13px;
+}
+.car-detail .icon {
+  color: #2563eb;
+  font-size: 16px;
 }
 
-.car-details-list .icon {
-  color: #3498db;
-  font-size: 1.2rem;
-  flex-shrink: 0;
+.carcard__footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
-.car-details-list span {
-  color: #555;
+.carcard__price {
+  font-weight: 800;
+  color: #111827;
+  font-size: 16px;
 }
 
-.car-card .price {
-  color: #555;
-  font-weight: bold;
-  font-size: 1.3rem;
-}
-
-.car-card button {
-  width: 100%;
-  padding: 10px;
-  background-color: hsl(32, 84%, 50%);
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 1rem;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
 }
+.btn-primary:hover { filter: brightness(.95); }
 
-.car-card button:hover {
-  background-color: hsl(32, 84%, 70%);
+@media (max-width: 480px) {
+  .carcard__image { height: 140px; }
+  .carcard { min-height: 300px; }
 }
