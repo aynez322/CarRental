@@ -51,26 +51,35 @@
   font-weight: 600;
 }
 
-.searchbar__item input,
-.searchbar__item select {
-  padding: 8px 10px;
-  border-radius: 8px;
+.searchbar__item input {
+   padding: 8px 10px;
   border: 1px solid #e5e7eb;
   min-width: 160px;
+  height: 2.4rem;
 }
-
-.searchbar__action {
-  align-self: center;
+.searchbar__item select {
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  min-width: 160px;
+  height: 2.4rem;
 }
 
 .btn-primary {
   background: #2563eb;
   border: none;
   color: white;
-  padding: 12px 22px;
-  border-radius: 28px;
-  font-weight: 700;
-  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  height: 2.5rem;
+  width: 6rem;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  line-height: 1;
+  text-align: center;
 }
 .btn-primary:hover {
   background-color: #3ac0b7;

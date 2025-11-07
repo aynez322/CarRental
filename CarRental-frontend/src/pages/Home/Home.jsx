@@ -5,7 +5,6 @@ import CarList from '../../components/car/CarList/CarList';
 import carImg from '../../assets/masina.png';
 import Contact from '../../components/contact/Contact';
 
-
 export default function Home() {
   const [filters, setFilters] = useState({
     location: '',
@@ -28,7 +27,6 @@ export default function Home() {
             Car Hire in <span className="hero__title--highlight">Cluj-Napoca</span>
           </h1>
           
-
           <form className="searchbar" onSubmit={onSearch}>
             <div className="searchbar__item">
               <label>Pickup Location</label>
@@ -52,19 +50,21 @@ export default function Home() {
             <div className="searchbar__item searchbar__action">
               <button type="submit" className="btn-primary">Search</button>
             </div>
-
           </form>
+          
           <div className="hero__car">
             <img src={carImg} alt="Featured car" />
-            </div>
+          </div>
         </div>
       </section>
 
-      <main className="container">
-       
+      <main id="cars" className="container">
         <CarList filters={filters} />
       </main>
-      <Contact />
+      
+      <div id="contact">
+        <Contact />
+      </div>
     </div>
   );
 }
