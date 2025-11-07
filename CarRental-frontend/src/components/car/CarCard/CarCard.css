@@ -80,19 +80,3 @@
   color: #111827;
   font-size: 16px;
 }
-
-.btn-primary {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.btn-primary:hover { filter: brightness(.95); }
-
-@media (max-width: 480px) {
-  .carcard__image { height: 140px; }
-  .carcard { min-height: 300px; }
-}

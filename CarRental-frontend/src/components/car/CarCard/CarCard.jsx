@@ -55,7 +55,7 @@ export default function CarCard({ car }) {
         <div className="carcard__footer">
           <div className="carcard__price">{formattedPrice} lei/day</div>
           <div>
-            <button className="btn-primary">Book Now</button>
+            <button className="btn-primary">Book</button>
           </div>
         </div>
       </div>
