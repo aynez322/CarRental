@@ -1,0 +1,63 @@
+.available-cars-page {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.available-cars-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.available-cars-header {
+  margin-bottom: 30px;
+}
+
+.available-cars-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.available-cars-header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.available-cars-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  color: #64748b;
+  margin: 0;
+  font-size: 15px;
+}
