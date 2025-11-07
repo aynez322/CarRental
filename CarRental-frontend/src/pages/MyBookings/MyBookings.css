@@ -1,0 +1,156 @@
+.mybookings-page {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.mybookings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.mybookings-header {
+  margin-bottom: 30px;
+}
+
+.mybookings-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.mybookings-header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.mybookings-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.mybookings-tab {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.mybookings-tab:hover {
+  color: #0f172a;
+}
+
+.mybookings-tab.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.mybookings-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+.mybookings-section {
+  width: 100%;
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  color: #64748b;
+  margin: 0 0 24px;
+  font-size: 15px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  height: 2.5rem;
+  width: 6rem;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  line-height: 1;
+  text-align: center;
+}
+.btn-primary:hover {
+  background-color: #3ac0b7;
+}
+
+@media (max-width: 768px) {
+  .mybookings-container {
+    padding: 20px 16px;
+  }
+
+  .mybookings-header h1 {
+    font-size: 24px;
+  }
+
+  .mybookings-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mybookings-tab {
+    padding: 10px 16px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
+
+  .empty-state__icon {
+    font-size: 48px;
+  }
+}
