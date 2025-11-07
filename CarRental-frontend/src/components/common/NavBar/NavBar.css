@@ -40,31 +40,26 @@
 }
 
 .nav__link {
+  background: none;
+  border: none;
   color: #374151;
   text-decoration: none;
+  font-size: 15px;
   font-weight: 600;
-  padding: 6px 8px;
+  padding: 10px 14px;
   border-radius: 6px;
-}
-.nav__link:hover {
-  background: rgba(37,99,235,0.06);
-}
-
-.nav__login {
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: color 0.2s, background 0.2s;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  display: inline-block;
 }
 
-.nav__login:hover {
-  background-color: #3ac0b7;
+.nav__link:hover {
+  color: #111827;
+  background: rgba(55, 65, 81, 0.06);
 }
 
+.nav__login,
 .nav__admin {
   background-color: #2563eb;
   color: white;
@@ -74,21 +69,15 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  line-height: 1;
+  text-align: center;
 }
 
+.nav__login:hover,
 .nav__admin:hover {
   background-color: #3ac0b7;
-}
-
-@media (max-width: 600px) {
-  .nav__container {
-    padding: 8px 12px;
-  }
-  .nav__logo {
-    width: 44px;
-    height: 44px;
-  }
-  .nav__links {
-    gap: 8px;
-  }
 }
