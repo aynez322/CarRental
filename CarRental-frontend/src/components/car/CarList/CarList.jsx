@@ -80,52 +80,52 @@ function CarList({ filters = {} }) {
   
 
   useEffect(() => {
-    setCars(mockCars);
-  //   let isMounted = true;
-  //   setLoading(true);
+    let isMounted = true;
+    setLoading(true);
 
-  //   const params = new URLSearchParams();
-  //   if (filters.query) params.append("q", filters.query);
-  //   if (filters.location) params.append("location", filters.location);
-  //   if (filters.dateFrom) params.append("dateFrom", filters.dateFrom);
-  //   if (filters.dateTo) params.append("dateTo", filters.dateTo);
+    const params = new URLSearchParams();
+    if (filters.query) params.append("q", filters.query);
+    if (filters.location) params.append("location", filters.location);
+    if (filters.dateFrom) params.append("dateFrom", filters.dateFrom);
+    if (filters.dateTo) params.append("dateTo", filters.dateTo);
 
-  //   fetch(`${API_BASE}/cars?${params.toString()}`)
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error("API response not ok");
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       if (!isMounted) return;
-  //       const list = Array.isArray(data) ? data : data.cars || [];
-  //       const filtered = applyClientFilters(list, filters);
-  //       setCars(filtered);
-  //     })
-  //     .catch(() => {
-  //       const filtered = applyClientFilters(mockCars, filters);
-  //       // if (isMounted) 
-  //       setCars(filtered);
-  //       console.log('Sasat');
-  //     })
-  //     .finally(() => {
-  //       if (isMounted) setLoading(false);
-  //     });
+    fetch(`${API_BASE}/cars?${params.toString()}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("API response not ok");
+        return res.json();
+      })
+      .then((data) => {
+        if (!isMounted) return;
+        const list = Array.isArray(data) ? data : data.cars || [];
+        const filtered = applyClientFilters(list, filters);
+        setCars(filtered);
+        console.log(data);
+      })
+      .catch(() => {
+        const filtered = applyClientFilters(mockCars, filters);
+        if (isMounted)
+          setCars(filtered);
+        console.log('Sasat');
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
 
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // 
+    return () => {
+      isMounted = false;
+    };
+  
   }, []);
 
-  // function applyClientFilters(list, filters) {
-  //   const q = (filters.query || "").trim().toLowerCase();
-  //   if (!q) return list;
-  //   return list.filter((c) => {
-  //     const text = `${c.brand} ${c.model} ${c.year} ${
-  //       c.plateNumber ?? ""
-  //     }`.toLowerCase();
-  //     return text.includes(q);
-  //   });}
+  function applyClientFilters(list, filters) {
+    const q = (filters.query || "").trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((c) => {
+      const text = `${c.brand} ${c.model} ${c.year} ${
+        c.plateNumber ?? ""
+      }`.toLowerCase();
+      return text.includes(q);
+    });}
 
   return (
   <div id="cars" className="car-list">
