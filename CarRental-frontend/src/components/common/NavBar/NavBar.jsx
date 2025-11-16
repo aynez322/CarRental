@@ -1,14 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 import './NavBar.css';
 import logo from '../../../assets/logo.png';
 
 export default function NavBar() {
+  const { user, logout, isAdmin } = useAuth();
+  const navigate = useNavigate();
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -23,7 +32,10 @@ export default function NavBar() {
         <nav className="nav__links">
           <Link to="/" className="nav__link">Home</Link>
           <Link to="/cars" className="nav__link">Cars</Link>
-          <Link to="/bookings" className="nav__link">My Bookings</Link>
+          
+          {user && (
+            <Link to="/bookings" className="nav__link">My Bookings</Link>
+          )}
           
           <button 
             onClick={() => scrollToSection('contact')} 
@@ -32,9 +44,17 @@ export default function NavBar() {
             Contact
           </button>
           
-          <button className="nav__login">Login</button>
+          {user ? (
+            <>
+              <button onClick={handleLogout} className="nav__login">Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className="nav__login">Login</Link>
+          )}
           
-          <Link to="/admin" className="nav__admin">Admin</Link>
+          {isAdmin() && (
+            <Link to="/admin" className="nav__admin">Admin</Link>
+          )}
         </nav>
       </div>
     </header>

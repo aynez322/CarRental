@@ -54,15 +54,8 @@ INSERT INTO locations (name, address, is_active) VALUES
 ('"Avram Iancu" International Airport', 'Aeroportul Internațional Cluj', TRUE),
 ('Autogara Beta', 'Str. Gării nr. 1', TRUE);
 
--- Insert admin user (password: admin123 - hashed with bcrypt)
-INSERT INTO users (name, email, password_hash, role, phone) VALUES
-('Admin User', 'admin@carrental.com', '$2a$10$YourHashedPasswordHere', 'admin', '+40700000000');
 
--- Insert sample customer
-INSERT INTO users (name, email, password_hash, phone) VALUES
-('John Doe', 'john@example.com', '$2a$10$YourHashedPasswordHere', '+40712345678');
-
--- Insert cars (matching your mockCars)
+-- Insert cars
 INSERT INTO cars (brand, model, year, price_per_day, fuel_type, gearbox, passengers, status, location) VALUES
 ('Toyota', 'Camry', 2020, 50.00, 'Petrol', 'Automatic', 4, 'available', 'aeroport'),
 ('Honda', 'Civic', 2020, 45.00, 'Petrol', 'Automatic', 4, 'available', 'aeroport'),
@@ -71,7 +64,7 @@ INSERT INTO cars (brand, model, year, price_per_day, fuel_type, gearbox, passeng
 ('Peugeot', 'Expert', 2025, 100.00, 'Petrol', 'Automatic', 9, 'available', 'autogara'),
 ('Mercedes-Benz', 'CLS', 2021, 150.00, 'Petrol', 'Automatic', 4, 'rented', 'aeroport');
 
--- Insert car images (matching your mockCars)
+-- Insert car images
 INSERT INTO car_images (car_id, image_url, is_primary, display_order) VALUES
 (1, '/images/cars/camry.jpg', TRUE, 1),
 (2, '/images/cars/honda.jpg', TRUE, 1),
@@ -80,7 +73,7 @@ INSERT INTO car_images (car_id, image_url, is_primary, display_order) VALUES
 (5, '/images/cars/peugeot.png', TRUE, 1),
 (6, '/images/cars/mercedescls.jpg', TRUE, 1);
 
--- Sample bookings for testing MyBookings tabs
+-- Sample bookings
 INSERT INTO bookings (user_id, car_id, pickup_location, pickup_date, return_date, total_price, status, customer_name, customer_email, customer_phone) VALUES
 (2, 6, 'aeroport', '2025-11-08', '2025-11-15', 1050.00, 'active', 'John Doe', 'john@example.com', '+40712345678'),
 (2, 2, 'aeroport', '2025-10-01', '2025-10-05', 180.00, 'completed', 'John Doe', 'john@example.com', '+40712345678'),
