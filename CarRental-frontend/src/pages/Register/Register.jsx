@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import carImg from '../../assets/masina.png';
 import './Register.css';
 
 export default function Register() {
@@ -52,6 +53,16 @@ export default function Register() {
 
   return (
     <div className="register-page">
+      <div className="register-background">
+        <div className="register-background__content">
+          <h1 className="register-background__title">
+            Car Hire in <span className="register-background__title--highlight">Cluj-Napoca</span>
+          </h1>
+          <div className="register-background__car">
+            <img src={carImg} alt="Featured car" />
+          </div>
+        </div>
+      </div>
       <div className="register-container">
         <h1>Create Account</h1>
         <p className="register-subtitle">Sign up to get started</p>
@@ -135,6 +146,10 @@ export default function Register() {
 
         <p className="login-link">
           Already have an account? <Link to="/login">Login</Link>
+        </p>
+        
+        <p className="home-link">
+          <Link to="/">Back to Home</Link>
         </p>
       </div>
     </div>

@@ -61,7 +61,7 @@ export default function CarCard({ car }) {
         </div>
 
         <div className="carcard__footer">
-          <div className="carcard__price">{formattedPrice} lei/day</div>
+          <div className="carcard__price">{formattedPrice} $/day</div>
           <div>
             <button className="btn-primary">Book</button>
           </div>

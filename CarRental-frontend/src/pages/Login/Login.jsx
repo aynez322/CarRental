@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import carImg from '../../assets/masina.png';
 import './Login.css';
 
 export default function Login() {
@@ -29,6 +30,16 @@ export default function Login() {
 
   return (
     <div className="login-page">
+      <div className="login-background">
+        <div className="login-background__content">
+          <h1 className="login-background__title">
+            Car Hire in <span className="login-background__title--highlight">Cluj-Napoca</span>
+          </h1>
+          <div className="login-background__car">
+            <img src={carImg} alt="Featured car" />
+          </div>
+        </div>
+      </div>
       <div className="login-container">
         <h1>Welcome Back</h1>
         <p className="login-subtitle">Login to your account</p>
@@ -69,6 +80,10 @@ export default function Login() {
 
         <p className="signup-link">
           Don't have an account? <Link to="/register">Sign up</Link>
+        </p>
+        
+        <p className="home-link">
+          <Link to="/">Back to Home</Link>
         </p>
       </div>
     </div>
