@@ -81,3 +81,10 @@
 .nav__admin:hover {
   background-color: #3ac0b7;
 }
+
+.nav__user {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+}

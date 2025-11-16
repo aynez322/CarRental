@@ -8,22 +8,30 @@ import './CarCard.css';
 export default function CarCard({ car }) {
   const {
     images = [],
+    image,
     brand = 'Unknown',
     model = '',
     pricePerDay = 0,
+    price,
     year = '',
-    fuel = '',
+    fuelType,
+    fuel = fuelType,
     gearbox = '',
     passengers = ''
   } = car || {};
 
-  const formattedPrice = typeof price === 'number' ? pricePerDay.toFixed(2) : pricePerDay;
+  const imageUrl = images && images.length > 0 
+    ? images.find(img => img.isPrimary)?.imageUrl || images[0]?.imageUrl
+    : image || '/images/cars/placeholder.jpg';
+
+  const carPrice = pricePerDay || price || 0;
+  const formattedPrice = typeof carPrice === 'number' ? carPrice.toFixed(2) : carPrice;
 
   return (
     <div className="carcard">
       <div className="carcard__image">
         <img
-          src={images[0].imageUrl}
+          src={imageUrl}
           alt={`${brand} ${model}`}
           onError={(e) => { e.currentTarget.src = '/images/cars/placeholder.jpg'; }}
         />

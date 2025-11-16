@@ -8,10 +8,10 @@ const mockCars = [
       id: 1,
       brand: "Toyota",
       model: "Camry",
-      price: 50,
+      pricePerDay: 50,
       image: "/images/cars/camry.jpg",
       year: 2020,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 4,
     },
@@ -19,10 +19,10 @@ const mockCars = [
       id: 2,
       brand: "Honda",
       model: "Civic",
-      price: 45,
+      pricePerDay: 45,
       image: "/images/cars/honda.jpg",
       year: 2020,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 4,
     },
@@ -30,10 +30,10 @@ const mockCars = [
       id: 3,
       brand: "BMW",
       model: "5 Series",
-      price: 200,
+      pricePerDay: 200,
       image: "/images/cars/bmw5.jpg",
       year: 2024,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 5,
     },
@@ -41,10 +41,10 @@ const mockCars = [
       id: 4,
       brand: "Audi",
       model: "A6",
-      price: 200,
+      pricePerDay: 200,
       image: "/images/cars/audia6.jpg",
       year: 2024,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 5,
     },
@@ -52,10 +52,10 @@ const mockCars = [
       id: 5,
       brand: "Peugeot",
       model: "Expert",
-      price: 100,
+      pricePerDay: 100,
       image: "/images/cars/peugeot.png",
       year: 2025,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 9,
     },
@@ -63,10 +63,10 @@ const mockCars = [
       id: 6,
       brand: "Mercedes-Benz",
       model: "CLS",
-      price: 150,
+      pricePerDay: 150,
       image: "/images/cars/mercedescls.jpg",
       year: 2021,
-      fuel: "Petrol",
+      fuelType: "Petrol",
       gearbox: "Automatic",
       passengers: 4,
     },
@@ -105,7 +105,6 @@ function CarList({ filters = {} }) {
         const filtered = applyClientFilters(mockCars, filters);
         if (isMounted)
           setCars(filtered);
-        console.log('Sasat');
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -138,7 +137,8 @@ function CarList({ filters = {} }) {
       <div className="car-grid">
         {cars.map(car => (
           <CarCard 
-            car = {car}
+            key={car.id}
+            car={car}
           />
         ))}
       </div>
