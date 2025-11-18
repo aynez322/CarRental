@@ -6,33 +6,26 @@
   color: #071028;
 }
 
-.car-grid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(1, 1fr);
-}
-
 .carcard {
   background: #fff;
   border: 1px solid rgba(15,23,42,0.06);
   box-shadow: 0 10px 30px rgba(16,24,40,0.06);
 }
 
-@media (min-width: 600px) {
-  .car-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
-@media (min-width: 900px) {
-  .car-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+
+@media (max-width: 1200px) {
+  .car-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (min-width: 1200px) {
-  .car-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+@media (max-width: 640px) {
+  .car-grid { grid-template-columns: 1fr; }
 }
+
+.car-card { width: 100%; max-width: 100%; }
 
 .carlist__loading,
 .carlist__empty {

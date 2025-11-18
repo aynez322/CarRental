@@ -116,3 +116,8 @@
     max-width: 360px;
   }
 }
+
+.car-list h2,
+.car-list-title {
+  margin-bottom: 30px;
+}
