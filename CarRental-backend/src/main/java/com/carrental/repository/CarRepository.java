@@ -2,12 +2,43 @@ package com.carrental.repository;
 
 import com.carrental.model.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Repository
 public interface CarRepository extends JpaRepository<Car, Long> {
+
     List<Car> findByStatus(String status);
     List<Car> findByLocation(String location);
+    List<Car> findByLocationIgnoreCase(String location);
+
+    /**
+     * Mașini disponibile într-un interval inclusiv [pickupDate, returnDate].
+     * Suprapunere blocată dacă există Booking cu:
+     *   booking.pickupDate <= :returnDate AND booking.returnDate >= :pickupDate
+     * și status in ('PENDING','CONFIRMED'(!!!!Doina,trebuie schimbat in baza de date)).
+     * Location este opțional.
+     * Exclud stări non‑operational (maintenance / rented)
+     */
+    @Query("""
+        SELECT c
+        FROM Car c
+        WHERE (:location IS NULL OR LOWER(c.location) = LOWER(:location))
+          AND (c.status IS NULL OR LOWER(c.status) NOT IN ('maintenance','rented'))
+          AND NOT EXISTS (
+              SELECT b.id
+              FROM Booking b
+              WHERE b.car = c
+                AND b.status IN ('ACTIVE')
+                AND b.pickupDate <= :returnDate
+                AND b.returnDate >= :pickupDate
+          )
+        """)
+    List<Car> findAvailable(
+            @Param("location") String location,
+            @Param("pickupDate") LocalDate pickupDate,
+            @Param("returnDate") LocalDate returnDate
+    );
 }
