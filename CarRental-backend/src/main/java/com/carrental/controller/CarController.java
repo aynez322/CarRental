@@ -2,22 +2,27 @@ package com.carrental.controller;
 
 import com.carrental.model.Car;
 import com.carrental.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/cars")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class CarController {
 
-    @Autowired
-    private CarService carService;
+    private final CarService carService;
 
     @GetMapping
-    public List<Car> getAllCars() {
-        return carService.getAllCars();
+    public List<Car> getAllCars(
+        @RequestParam(required = false) String location,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate pickupDate,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
+        return carService.search(location, pickupDate, returnDate);
     }
 
     @GetMapping("/{id}")
