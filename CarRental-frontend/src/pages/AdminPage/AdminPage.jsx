@@ -1,13 +1,406 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from '../../components/common/NavBar/NavBar';
+import { FaTimes, FaUpload } from 'react-icons/fa';
 import './AdminPage.css';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('cars');
+  const [cars, setCars] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [showCarForm, setShowCarForm] = useState(false);
+  const [editingCar, setEditingCar] = useState(null);
+  const [carFormData, setCarFormData] = useState({
+    brand: '',
+    model: '',
+    year: new Date().getFullYear(),
+    pricePerDay: '',
+    fuelType: 'Petrol',
+    gearbox: 'Manual',
+    passengers: 5,
+    location: '',
+    description: '',
+    status: 'available'
+  });
+  const [carImages, setCarImages] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'cars') {
+      fetchCars();
+    } else if (activeTab === 'users') {
+      fetchUsers();
+    }
+  }, [activeTab]);
+
+  const fetchCars = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8080/api/admin/cars', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch cars');
+      const data = await response.json();
+      setCars(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8080/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch users');
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCar = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this car?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/admin/cars/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to delete car');
+      fetchCars();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setCarImages(prev => [...prev, ...files]);
+  };
+
+  const removeImage = (index) => {
+    setCarImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const resetCarForm = () => {
+    setCarFormData({
+      brand: '',
+      model: '',
+      year: new Date().getFullYear(),
+      pricePerDay: '',
+      fuelType: 'Petrol',
+      gearbox: 'Manual',
+      passengers: 5,
+      location: '',
+      description: '',
+      status: 'available'
+    });
+    setCarImages([]);
+    setShowCarForm(false);
+    setEditingCar(null);
+  };
+
+  const openAddCarForm = () => {
+    resetCarForm();
+    setShowCarForm(true);
+  };
+
+  const openEditCarForm = (car) => {
+    setCarFormData({
+      brand: car.brand || '',
+      model: car.model || '',
+      year: car.year || new Date().getFullYear(),
+      pricePerDay: car.pricePerDay || '',
+      fuelType: car.fuelType || 'Petrol',
+      gearbox: car.gearbox || 'Manual',
+      passengers: car.passengers || 5,
+      location: car.location || '',
+      description: car.description || '',
+      status: car.status || 'available'
+    });
+    setEditingCar(car);
+    setCarImages([]);
+    setShowCarForm(true);
+  };
+
+  const handleSubmitCar = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const isEditing = editingCar !== null;
+      const url = isEditing 
+        ? `http://localhost:8080/api/admin/cars/${editingCar.id}`
+        : 'http://localhost:8080/api/admin/cars';
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const carResponse = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(carFormData)
+      });
+
+      if (!carResponse.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} car`);
+      const savedCar = await carResponse.json();
+
+      // If there are new images, upload them
+      if (carImages.length > 0) {
+        const formData = new FormData();
+        carImages.forEach(image => {
+          formData.append('images', image);
+        });
+
+        await fetch(`http://localhost:8080/api/admin/cars/${savedCar.id}/images`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+      }
+
+      resetCarForm();
+      fetchCars();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const deleteUser = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to delete user');
+      fetchUsers();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="admin-page">
       <NavBar />
+      
+      {/* Add/Edit Car Modal */}
+      {showCarForm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>{editingCar ? 'Edit Car' : 'Add New Car'}</h2>
+              <button className="modal-close" onClick={resetCarForm}>
+                <FaTimes />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmitCar} className="add-car-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="brand">Brand *</label>
+                  <input
+                    type="text"
+                    id="brand"
+                    value={carFormData.brand}
+                    onChange={(e) => setCarFormData({...carFormData, brand: e.target.value})}
+                    required
+                    placeholder="e.g. Toyota"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="model">Model *</label>
+                  <input
+                    type="text"
+                    id="model"
+                    value={carFormData.model}
+                    onChange={(e) => setCarFormData({...carFormData, model: e.target.value})}
+                    required
+                    placeholder="e.g. Camry"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="year">Year *</label>
+                  <input
+                    type="number"
+                    id="year"
+                    value={carFormData.year}
+                    onChange={(e) => setCarFormData({...carFormData, year: parseInt(e.target.value)})}
+                    required
+                    min="1990"
+                    max={new Date().getFullYear() + 1}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="pricePerDay">Price per Day ($) *</label>
+                  <input
+                    type="number"
+                    id="pricePerDay"
+                    value={carFormData.pricePerDay}
+                    onChange={(e) => setCarFormData({...carFormData, pricePerDay: parseFloat(e.target.value)})}
+                    required
+                    min="1"
+                    step="0.01"
+                    placeholder="e.g. 50"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="fuelType">Fuel Type *</label>
+                  <select
+                    id="fuelType"
+                    value={carFormData.fuelType}
+                    onChange={(e) => setCarFormData({...carFormData, fuelType: e.target.value})}
+                    required
+                  >
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="gearbox">Gearbox *</label>
+                  <select
+                    id="gearbox"
+                    value={carFormData.gearbox}
+                    onChange={(e) => setCarFormData({...carFormData, gearbox: e.target.value})}
+                    required
+                  >
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="passengers">Passengers *</label>
+                  <input
+                    type="number"
+                    id="passengers"
+                    value={carFormData.passengers}
+                    onChange={(e) => setCarFormData({...carFormData, passengers: parseInt(e.target.value)})}
+                    required
+                    min="1"
+                    max="12"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="location">Location</label>
+                  <select
+                    id="location"
+                    value={carFormData.location}
+                    onChange={(e) => setCarFormData({...carFormData, location: e.target.value})}
+                  >
+                    <option value="">Select location</option>
+                    <option value="Avram Iancu International Airport">"Avram Iancu" International Airport</option>
+                    <option value="Autogara Beta">Autogara Beta</option>
+                  </select>
+                </div>
+              </div>
+
+              {editingCar && (
+                <div className="form-group">
+                  <label htmlFor="status">Status</label>
+                  <select
+                    id="status"
+                    value={carFormData.status}
+                    onChange={(e) => setCarFormData({...carFormData, status: e.target.value})}
+                  >
+                    <option value="available">Available</option>
+                    <option value="rented">Rented</option>
+                    <option value="maintenance">Maintenance</option>
+                  </select>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  value={carFormData.description}
+                  onChange={(e) => setCarFormData({...carFormData, description: e.target.value})}
+                  placeholder="Optional description of the car"
+                  rows="3"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Photos</label>
+                <div className="image-upload-area">
+                  <input
+                    type="file"
+                    id="carImages"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                    className="image-input"
+                  />
+                  <label htmlFor="carImages" className="image-upload-label">
+                    <FaUpload />
+                    <span>{editingCar ? 'Click to add more images' : 'Click to upload images'}</span>
+                  </label>
+                </div>
+                {carImages.length > 0 && (
+                  <div className="image-preview-list">
+                    {carImages.map((file, index) => (
+                      <div key={index} className="image-preview-item">
+                        <img src={URL.createObjectURL(file)} alt={`Preview ${index + 1}`} />
+                        <button type="button" className="remove-image" onClick={() => removeImage(index)}>
+                          <FaTimes />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancel-form" onClick={resetCarForm} disabled={submitting}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-confirm" disabled={submitting}>
+                  {submitting ? (editingCar ? 'Saving...' : 'Adding...') : (editingCar ? 'Save Changes' : 'Add Car')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       
       <div className="admin-container">
         <div className="admin-header">
@@ -37,54 +430,62 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-content">
+          {error && <div className="error-message">{error}</div>}
+          
           {activeTab === 'cars' && (
             <div className="admin-section">
               <div className="section-header">
                 <h2>Manage Cars</h2>
-                <button className="btn-add">+ Add New Car</button>
+                <button className="btn-add" onClick={openAddCarForm}>+ Add New Car</button>
               </div>
               
-              <div className="admin-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Brand</th>
-                      <th>Model</th>
-                      <th>Year</th>
-                      <th>Price/Day</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Toyota</td>
-                      <td>Camry</td>
-                      <td>2020</td>
-                      <td>$50</td>
-                      <td><span className="status-available">Available</span></td>
-                      <td>
-                        <button className="btn-edit">Edit</button>
-                        <button className="btn-delete">Delete</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Honda</td>
-                      <td>Civic</td>
-                      <td>2021</td>
-                      <td>$45</td>
-                      <td><span className="status-rented">Rented</span></td>
-                      <td>
-                        <button className="btn-edit">Edit</button>
-                        <button className="btn-delete">Delete</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              {loading ? (
+                <div className="loading">Loading cars...</div>
+              ) : (
+                <div className="admin-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Price/Day</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cars.length === 0 ? (
+                        <tr>
+                          <td colSpan="7" className="no-data">No cars found</td>
+                        </tr>
+                      ) : (
+                        cars.map(car => (
+                          <tr key={car.id}>
+                            <td>{car.id}</td>
+                            <td>{car.brand}</td>
+                            <td>{car.model}</td>
+                            <td>{car.year}</td>
+                            <td>${car.pricePerDay}</td>
+                            <td>
+                              <span className={`status-${car.status?.toLowerCase()}`}>
+                                {car.status}
+                              </span>
+                            </td>
+                            <td>
+                              <button className="btn-edit" onClick={() => openEditCarForm(car)}>Edit</button>
+                              <button className="btn-delete" onClick={() => deleteCar(car.id)}>
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
@@ -133,33 +534,51 @@ export default function AdminPage() {
                 <button className="btn-add">+ Add New User</button>
               </div>
               
-              <div className="admin-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Joined</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Admin User</td>
-                      <td>admin@carrental.com</td>
-                      <td><span className="role-admin">Admin</span></td>
-                      <td>2025-01-01</td>
-                      <td>
-                        <button className="btn-edit">Edit</button>
-                        <button className="btn-delete">Delete</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              {loading ? (
+                <div className="loading">Loading users...</div>
+              ) : (
+                <div className="admin-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.length === 0 ? (
+                        <tr>
+                          <td colSpan="6" className="no-data">No users found</td>
+                        </tr>
+                      ) : (
+                        users.map(user => (
+                          <tr key={user.id}>
+                            <td>{user.id}</td>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                            <td>{user.phone || 'N/A'}</td>
+                            <td>
+                              <span className={`role-${user.role}`}>
+                                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                              </span>
+                            </td>
+                            <td>
+                              <button className="btn-edit">Edit</button>
+                              <button className="btn-delete" onClick={() => deleteUser(user.id)}>
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
         </div>
