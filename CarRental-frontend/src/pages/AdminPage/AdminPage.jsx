@@ -7,6 +7,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('cars');
   const [cars, setCars] = useState([]);
   const [users, setUsers] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCarForm, setShowCarForm] = useState(false);
@@ -31,6 +32,8 @@ export default function AdminPage() {
       fetchCars();
     } else if (activeTab === 'users') {
       fetchUsers();
+    } else if (activeTab === 'bookings') {
+      fetchBookings();
     }
   }, [activeTab]);
 
@@ -69,6 +72,77 @@ export default function AdminPage() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBookings = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8080/api/admin/bookings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch bookings');
+      const data = await response.json();
+      setBookings(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateBookingStatus = async (id, status) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/admin/bookings/${id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+      if (!response.ok) throw new Error('Failed to update booking status');
+      fetchBookings();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const approveBooking = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/admin/bookings/${id}/approve`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to approve booking');
+      fetchBookings();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const deleteBooking = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/admin/bookings/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to cancel booking');
+      fetchBookings();
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -495,35 +569,70 @@ export default function AdminPage() {
                 <h2>Manage Bookings</h2>
               </div>
               
-              <div className="admin-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Booking ID</th>
-                      <th>Customer</th>
-                      <th>Car</th>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>#001</td>
-                      <td>John Doe</td>
-                      <td>Toyota Camry</td>
-                      <td>2025-11-05</td>
-                      <td>2025-11-10</td>
-                      <td><span className="status-confirmed">Confirmed</span></td>
-                      <td>
-                        <button className="btn-view">View</button>
-                        <button className="btn-cancel">Cancel</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              {loading ? (
+                <p>Loading bookings...</p>
+              ) : error ? (
+                <p className="error">{error}</p>
+              ) : (
+                <div className="admin-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Car</th>
+                        <th>Pickup</th>
+                        <th>Return</th>
+                        <th>Location</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bookings.length === 0 ? (
+                        <tr>
+                          <td colSpan="10" style={{ textAlign: 'center' }}>No bookings found</td>
+                        </tr>
+                      ) : (
+                        bookings.map(booking => (
+                          <tr key={booking.id}>
+                            <td>#{booking.id}</td>
+                            <td>{booking.customerName}</td>
+                            <td>{booking.customerEmail}</td>
+                            <td>{booking.car?.brand} {booking.car?.model}</td>
+                            <td>{new Date(booking.pickupDate).toLocaleDateString()}</td>
+                            <td>{new Date(booking.returnDate).toLocaleDateString()}</td>
+                            <td>{booking.pickupLocation}</td>
+                            <td>${booking.totalPrice}</td>
+                            <td>
+                              <span className={`status-badge status-${booking.status.toLowerCase()}`}>
+                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="booking-actions">
+                                {booking.status === 'pending' && (
+                                  <button 
+                                    className="btn-approve" 
+                                    onClick={() => approveBooking(booking.id)}
+                                  >
+                                    Approve
+                                  </button>
+                                )}
+                                {(booking.status === 'pending' || booking.status === 'active') && (
+                                  <button className="btn-cancel" onClick={() => deleteBooking(booking.id)}>Cancel</button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
