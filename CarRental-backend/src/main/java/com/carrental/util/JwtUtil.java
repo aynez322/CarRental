@@ -52,7 +52,15 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof com.carrental.model.User) {
+            claims.put("role", ((com.carrental.model.User) userDetails).getRole());
+        }
         return createToken(claims, userDetails.getUsername());
+    }
+
+    public String extractRole(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

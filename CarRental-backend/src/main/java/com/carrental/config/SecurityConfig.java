@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/cars/**").permitAll()
                 .requestMatchers("/api/locations/**").permitAll()
+                .requestMatchers("/api/bookings/check-availability").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )

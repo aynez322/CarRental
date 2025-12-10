@@ -1,8 +1,10 @@
 package com.carrental.controller;
 
+import com.carrental.model.Booking;
 import com.carrental.model.Car;
 import com.carrental.model.CarImage;
 import com.carrental.model.User;
+import com.carrental.repository.BookingRepository;
 import com.carrental.repository.CarImageRepository;
 import com.carrental.repository.UserRepository;
 import com.carrental.service.CarService;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +38,9 @@ public class AdminController {
 
     @Autowired
     private CarImageRepository carImageRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Value("${app.upload.dir:uploads/cars}")
     private String uploadDir;
@@ -132,6 +138,56 @@ public class AdminController {
             return ResponseEntity.ok(savedImages);
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("Failed to upload images: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/bookings")
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    @PutMapping("/bookings/{id}/approve")
+    public ResponseEntity<?> approveBooking(@PathVariable Long id) {
+        try {
+            Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+            
+            if (!"pending".equals(booking.getStatus())) {
+                return ResponseEntity.badRequest().body("Only pending bookings can be approved");
+            }
+            
+            booking.setStatus("active");
+            bookingRepository.save(booking);
+            return ResponseEntity.ok(booking);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to approve booking: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/bookings/{id}/status")
+    public ResponseEntity<?> updateBookingStatus(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        try {
+            Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+            String status = payload.get("status").toString();
+            booking.setStatus(status);
+            bookingRepository.save(booking);
+            return ResponseEntity.ok(booking);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/bookings/{id}")
+    public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
+        try {
+            Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+            booking.setStatus("cancelled");
+            bookingRepository.save(booking);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

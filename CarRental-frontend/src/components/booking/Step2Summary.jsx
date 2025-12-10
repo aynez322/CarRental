@@ -15,39 +15,39 @@ export default function Step2Summary({
   const totalPrice = (totalDays * pricePerDay).toFixed(2);
 
   const rules = [
-    'Este necesar buletin valabil la preluare.',
-    'Combustibilul se returnează la același nivel.',
-    'Fumatul în mașină este interzis.',
-    'Întârzierea la predare poate genera costuri suplimentare.'
+    'Valid ID is required at pick-up.',
+    'Fuel must be returned at the same level.',
+    'Smoking in the vehicle is prohibited.',
+    'Late returns may incur additional charges.'
   ];
 
   const locationLabelMap = {
-    'aeroport': 'Aeroportul Internațional Avram Iancu Cluj',
-    'autogara': 'Autogara Beta Cluj'
+    'aeroport': 'Avram Iancu International Airport Cluj',
+    'autogara': 'Beta Bus Station Cluj'
   };
 
   return (
     <div className="step step2">
-      <h3>Rezumat rezervare</h3>
+      <h3>Booking Summary</h3>
       <div className="summary-block">
-        <div><strong>Mașină:</strong> {car.brand} {car.model}</div>
-        <div><strong>Locație pick-up:</strong> {locationLabelMap[location]}</div>
-        <div><strong>Interval:</strong> {formatDateRange(dateRange.start, dateRange.end)}</div>
-        <div><strong>Zile:</strong> {totalDays}</div>
-        <div><strong>Preț / zi:</strong> {pricePerDay.toFixed(2)} $</div>
-        <div><strong>Total estimat:</strong> {totalPrice} $</div>
+        <div><strong>Vehicle:</strong> {car.brand} {car.model}</div>
+        <div><strong>Pick-up Location:</strong> {locationLabelMap[location]}</div>
+        <div><strong>Rental Period:</strong> {formatDateRange(dateRange.start, dateRange.end)}</div>
+        <div><strong>Days:</strong> {totalDays}</div>
+        <div><strong>Price / day:</strong> ${pricePerDay.toFixed(2)}</div>
+        <div><strong>Total Estimate:</strong> ${totalPrice}</div>
       </div>
 
       <div className="rules-block">
-        <h4>Reguli de închiriere</h4>
+        <h4>Rental Terms</h4>
         <ul>
           {rules.map(r => <li key={r}>{r}</li>)}
         </ul>
       </div>
 
       <div className="actions-inline">
-        <button className="btn-secondary" onClick={onBack}>Înapoi</button>
-        <button className="btn-primary" onClick={onNext}>Continuă</button>
+        <button className="btn-secondary" onClick={onBack}>Back</button>
+        <button className="btn-primary" onClick={onNext}>Continue</button>
       </div>
     </div>
   );

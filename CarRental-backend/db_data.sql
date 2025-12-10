@@ -35,7 +35,7 @@ CREATE TABLE bookings (
     pickup_date DATE NOT NULL,
     return_date DATE NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'completed', 'cancelled')),
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'cancelled')),
     customer_name VARCHAR(100),
     customer_email VARCHAR(100),
     customer_phone VARCHAR(20),

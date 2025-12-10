@@ -21,15 +21,34 @@ export default function Step1LocationDate({
     setLoadingCheck(true);
     setAvailability(null);
 
-    // Simulare apel API de verificare disponibilitate
-    await new Promise(res => setTimeout(res, 900));
-
-    // Exemplu logică: indisponibil dacă începutul este astăzi + 1 zi și brandul conține 'X'
-    const today = new Date();
-    const diffStart = daysBetween(today, dateRange.start);
-    const isAvailable = !(diffStart === 1 && car.brand.toLowerCase().includes('x'));
-    setAvailability(isAvailable);
-    setLoadingCheck(false);
+    try {
+      // Format dates as yyyy-MM-dd
+      const startDate = dateRange.start.toISOString().split('T')[0];
+      const endDate = dateRange.end.toISOString().split('T')[0];
+      
+      const url = `http://localhost:8080/api/bookings/check-availability?carId=${car.id}&startDate=${startDate}&endDate=${endDate}`;
+      console.log('Checking availability:', url);
+      
+      const response = await fetch(url);
+      
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error('Failed to check availability');
+      }
+      
+      const data = await response.json();
+      console.log('Availability data:', data);
+      setAvailability(data.available);
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      setAvailability(null);
+      alert('Failed to check availability. Please try again.');
+    } finally {
+      setLoadingCheck(false);
+    }
   };
 
   const totalDays = (dateRange.start && dateRange.end)
@@ -38,13 +57,13 @@ export default function Step1LocationDate({
 
   return (
     <div className="step step1">
-      <h3>Selectează locația și intervalul</h3>
+      <h3>Select Location and Dates</h3>
       <LocationSelector
         selectedLocation={location}
         onSelect={setLocation}
         locations={[
-          { id: 'aeroport', label: 'Aeroportul Internațional Avram Iancu Cluj' },
-          { id: 'autogara', label: 'Autogara Beta Cluj' }
+          { id: 'aeroport', label: 'Avram Iancu International Airport Cluj' },
+          { id: 'autogara', label: 'Beta Bus Station Cluj' }
         ]}
       />
       <BookingCalendar
@@ -58,27 +77,27 @@ export default function Step1LocationDate({
           disabled={!location || !dateRange.start || !dateRange.end || loadingCheck}
           onClick={handleCheckAvailability}
         >
-          {loadingCheck ? 'Verific...' : 'Verifică disponibilitatea'}
+          {loadingCheck ? 'Checking...' : 'Check Availability'}
         </button>
       </div>
 
       {availability === false && (
         <div className="availability-message error">
-          Mașina nu este disponibilă pentru intervalul selectat.
+          Vehicle is not available for the selected dates.
         </div>
       )}
       {availability === true && (
         <div className="availability-message success">
-          Mașina este disponibilă! Poți continua.
+          Vehicle is available! You can proceed.
         </div>
       )}
 
       <div className="price-preview">
         {totalDays > 0 && (
           <>
-            <div>Interval: {formatDateRange(dateRange.start, dateRange.end)}</div>
-            <div>Zile totale: {totalDays}</div>
-            <div>Cost estimativ: {(totalDays * pricePerDay).toFixed(2)} $</div>
+            <div>Period: {formatDateRange(dateRange.start, dateRange.end)}</div>
+            <div>Total days: {totalDays}</div>
+            <div>Estimated cost: ${(totalDays * pricePerDay).toFixed(2)}</div>
           </>
         )}
       </div>
