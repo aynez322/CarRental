@@ -3,24 +3,23 @@ import Step1LocationDate from './Step1LocationDate';
 import Step2Summary from './Step2Summary';
 import Step3CustomerForm from './Step3CustomerForm';
 import './bookingStyles.css';
-import { createClient, createReservation } from '../../api/booking';
-import useBooking from '../../hooks/useBooking';
+import { createBooking } from '../../api/booking';
 
 export default function CarBookingModal({ car, onClose }) {
   const [step, setStep] = useState(1);
   const [location, setLocation] = useState(null);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
-  const [availability, setAvailability] = useState(null); // true / false / null
+  const [availability, setAvailability] = useState(null);
   const [loadingCheck, setLoadingCheck] = useState(false);
   const [clientData, setClientData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    cnp: '',
-    idPhotos: []
+    phone: ''
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
   const pricePerDay = car.pricePerDay || car.price || 0;
 
   const resetToStep1 = () => {
@@ -30,19 +29,37 @@ export default function CarBookingModal({ car, onClose }) {
 
   const canProceedStep1 = location && dateRange.start && dateRange.end && availability === true;
 
+  const formatDate = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleCreateBooking = async () => {
     if (!acceptTerms) return;
     setSubmitting(true);
     try {
-      // 1. Creează automat clientul (mock)
-      // 2. Creează cererea de rezervare (mock)
-      await new Promise(res => setTimeout(res, 1200));
-      // Aici ai putea primi un ID de rezervare
-      alert('Rezervarea a fost creată și este în așteptarea aprobării de către admin.');
-      onClose();
+      const bookingData = {
+        carId: car.id,
+        pickupLocation: location,
+        pickupDate: formatDate(dateRange.start),
+        returnDate: formatDate(dateRange.end),
+        customerName: `${clientData.firstName} ${clientData.lastName}`,
+        customerEmail: clientData.email,
+        customerPhone: clientData.phone
+      };
+
+      await createBooking(bookingData);
+      setBookingSuccess(true);
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     } catch (e) {
       console.error(e);
-      alert('A apărut o eroare la trimiterea rezervării.');
+      alert('Failed to create booking: ' + e.message);
     } finally {
       setSubmitting(false);
     }
@@ -52,7 +69,7 @@ export default function CarBookingModal({ car, onClose }) {
     <div className="booking-modal__backdrop">
       <div className="booking-modal__container">
         <div className="booking-modal__header">
-          <h2>Rezervare - {car.brand} {car.model}</h2>
+          <h2>Book - {car.brand} {car.model}</h2>
           <button className="close-btn" onClick={onClose}>&times;</button>
         </div>
 
@@ -63,7 +80,15 @@ export default function CarBookingModal({ car, onClose }) {
         </div>
 
         <div className="booking-modal__body">
-          {step === 1 && (
+          {bookingSuccess && (
+            <div className="booking-success-message">
+              <div className="success-icon">✓</div>
+              <h3>Booking Created Successfully!</h3>
+              <p>Your booking is pending admin approval.</p>
+              <p className="auto-close-text">This window will close automatically...</p>
+            </div>
+          )}
+          {!bookingSuccess && step === 1 && (
             <Step1LocationDate
               car={car}
               location={location}
@@ -77,7 +102,7 @@ export default function CarBookingModal({ car, onClose }) {
               pricePerDay={pricePerDay}
             />
           )}
-          {step === 2 && (
+          {!bookingSuccess && step === 2 && (
             <Step2Summary
               car={car}
               location={location}
@@ -87,7 +112,7 @@ export default function CarBookingModal({ car, onClose }) {
               onNext={() => setStep(3)}
             />
           )}
-          {step === 3 && (
+          {!bookingSuccess && step === 3 && (
             <Step3CustomerForm
               clientData={clientData}
               setClientData={setClientData}
@@ -111,7 +136,7 @@ export default function CarBookingModal({ car, onClose }) {
               disabled={!canProceedStep1}
               onClick={() => setStep(2)}
             >
-              Continuă
+              Continue
             </button>
           )}
         </div>

@@ -20,17 +20,11 @@ export default function Step3CustomerForm({
     setClientData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files);
-    setClientData(prev => ({ ...prev, idPhotos: files }));
-  };
-
   const isFormValid =
     clientData.firstName &&
     clientData.lastName &&
     clientData.email &&
-    clientData.cnp &&
-    clientData.idPhotos.length > 0 &&
+    clientData.phone &&
     acceptTerms;
 
   const totalDays = (dateRange.start && dateRange.end)
@@ -40,67 +34,55 @@ export default function Step3CustomerForm({
 
   return (
     <div className="step step3">
-      <h3>Date client & confirmare</h3>
+      <h3>Complete Your Booking</h3>
       <div className="summary-inline-box">
-        <div><strong>Mașină:</strong> {car.brand} {car.model}</div>
-        <div><strong>Interval:</strong> {formatDateRange(dateRange.start, dateRange.end)}</div>
-        <div><strong>Total de achitat la locație:</strong> {totalPrice} $</div>
+        <div><strong>Vehicle:</strong> {car.brand} {car.model}</div>
+        <div><strong>Rental Period:</strong> {formatDateRange(dateRange.start, dateRange.end)}</div>
+        <div><strong>Total Amount:</strong> ${totalPrice}</div>
       </div>
 
       <form className="customer-form" onSubmit={(e) => { e.preventDefault(); if (isFormValid) onSubmit(); }}>
         <div className="form-row">
-          <label>Prenume</label>
+          <label>First Name</label>
           <input
             name="firstName"
             value={clientData.firstName}
             onChange={handleChange}
+            placeholder="Enter your first name"
             required
           />
         </div>
         <div className="form-row">
-          <label>Nume</label>
+          <label>Last Name</label>
           <input
             name="lastName"
             value={clientData.lastName}
             onChange={handleChange}
+            placeholder="Enter your last name"
             required
           />
         </div>
         <div className="form-row">
-          <label>Email</label>
+          <label>Email Address</label>
           <input
             name="email"
             type="email"
             value={clientData.email}
             onChange={handleChange}
+            placeholder="your.email@example.com"
             required
           />
         </div>
         <div className="form-row">
-          <label>CNP</label>
+          <label>Phone Number</label>
           <input
-            name="cnp"
-            value={clientData.cnp}
+            name="phone"
+            type="tel"
+            value={clientData.phone}
             onChange={handleChange}
+            placeholder="+1 (555) 123-4567"
             required
           />
-        </div>
-        <div className="form-row">
-          <label>Buletin (poze față & verso)</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFiles}
-            required
-          />
-          {clientData.idPhotos.length > 0 && (
-            <div className="files-preview">
-              {clientData.idPhotos.map((f, i) => (
-                <span key={i}>{f.name}</span>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="form-row checkbox-row">
@@ -110,18 +92,18 @@ export default function Step3CustomerForm({
               checked={acceptTerms}
               onChange={(e) => setAcceptTerms(e.target.checked)}
             />
-            <span>Sunt de acord cu termenii și condițiile platformei.</span>
+            <span>I agree to the rental terms and conditions.</span>
           </label>
         </div>
 
         <div className="actions-inline">
-          <button type="button" className="btn-secondary" onClick={onBack}>Înapoi</button>
+          <button type="button" className="btn-secondary" onClick={onBack}>Back</button>
           <button
             type="submit"
             className="btn-primary"
             disabled={!isFormValid || submitting}
           >
-            {submitting ? 'Procesez...' : 'Book'}
+            {submitting ? 'Processing...' : 'Continue'}
           </button>
         </div>
       </form>
