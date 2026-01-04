@@ -48,8 +48,8 @@ export default function Home() {
                 onChange={e => setFilters(f => ({ ...f, location: e.target.value }))}
               >
                 <option value="">Select location</option>
-                <option value="aeroport">"Avram Iancu" International Airport</option>
-                <option value="autogara">Autogara Beta</option>
+                <option value="Avram Iancu International Airport">Avram Iancu International Airport</option>
+                <option value="Autogara Beta">Autogara Beta</option>
               </select>
             </div>
 

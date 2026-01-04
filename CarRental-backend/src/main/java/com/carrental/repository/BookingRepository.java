@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+    
+    // Find pending bookings older than specified time (for auto-cancellation)
+    @Query("SELECT b FROM Booking b WHERE LOWER(b.status) = 'pending' AND b.createdAt < :cutoffTime")
+    List<Booking> findStalePendingBookings(@Param("cutoffTime") LocalDateTime cutoffTime);
     List<Booking> findByUserOrderByPickupDateDesc(User user);
     
     List<Booking> findByCarId(Long carId);
@@ -24,4 +29,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         @Param("startDate") LocalDate startDate,
         @Param("endDate") LocalDate endDate
     );
+
+    // Find all car IDs that have pending bookings
+    @Query("SELECT DISTINCT b.car.id FROM Booking b WHERE LOWER(b.status) = 'pending'")
+    List<Long> findCarIdsWithPendingBookings();
 }

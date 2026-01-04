@@ -21,17 +21,12 @@ export default function Step2Summary({
     'Late returns may incur additional charges.'
   ];
 
-  const locationLabelMap = {
-    'aeroport': 'Avram Iancu International Airport Cluj',
-    'autogara': 'Beta Bus Station Cluj'
-  };
-
   return (
     <div className="step step2">
       <h3>Booking Summary</h3>
       <div className="summary-block">
         <div><strong>Vehicle:</strong> {car.brand} {car.model}</div>
-        <div><strong>Pick-up Location:</strong> {locationLabelMap[location]}</div>
+        <div><strong>Pick-up Location:</strong> {location || 'Not specified'}</div>
         <div><strong>Rental Period:</strong> {formatDateRange(dateRange.start, dateRange.end)}</div>
         <div><strong>Days:</strong> {totalDays}</div>
         <div><strong>Price / day:</strong> ${pricePerDay.toFixed(2)}</div>

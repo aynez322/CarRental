@@ -31,7 +31,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
               SELECT b.id
               FROM Booking b
               WHERE b.car = c
-                AND b.status IN ('ACTIVE')
+                AND LOWER(b.status) IN ('active', 'pending')
                 AND b.pickupDate <= :returnDate
                 AND b.returnDate >= :pickupDate
           )

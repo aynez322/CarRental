@@ -54,6 +54,11 @@ public class AdminController {
         return carService.getAllCars();
     }
 
+    @GetMapping("/cars/with-pending-bookings")
+    public List<Long> getCarsWithPendingBookings() {
+        return bookingRepository.findCarIdsWithPendingBookings();
+    }
+
     @PostMapping("/cars")
     public Car createCar(@RequestBody Car car) {
         return carService.saveCar(car);
