@@ -26,6 +26,7 @@ export default function AdminPage() {
   });
   const [carImages, setCarImages] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [carsWithPendingBookings, setCarsWithPendingBookings] = useState([]);
   const [showUserForm, setShowUserForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [userFormData, setUserFormData] = useState({
@@ -50,14 +51,22 @@ export default function AdminPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/api/admin/cars', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch cars');
-      const data = await response.json();
-      setCars(data);
+      const [carsResponse, pendingResponse] = await Promise.all([
+        fetch('http://localhost:8080/api/admin/cars', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('http://localhost:8080/api/admin/cars/with-pending-bookings', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+      if (!carsResponse.ok) throw new Error('Failed to fetch cars');
+      const carsData = await carsResponse.json();
+      setCars(carsData);
+      
+      if (pendingResponse.ok) {
+        const pendingData = await pendingResponse.json();
+        setCarsWithPendingBookings(pendingData);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -711,6 +720,11 @@ export default function AdminPage() {
                               <span className={`status-${car.status?.toLowerCase()}`}>
                                 {car.status}
                               </span>
+                              {carsWithPendingBookings.includes(car.id) && (
+                                <span className="badge-pending" title="Has pending bookings">
+                                  Pending Booking
+                                </span>
+                              )}
                             </td>
                             <td>
                               <button className="btn-edit" onClick={() => openEditCarForm(car)}>Edit</button>
