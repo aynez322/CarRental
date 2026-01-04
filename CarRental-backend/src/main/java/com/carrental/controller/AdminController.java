@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +42,9 @@ public class AdminController {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${app.upload.dir:uploads/cars}")
     private String uploadDir;
@@ -74,6 +78,62 @@ public class AdminController {
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<?> createUser(@RequestBody Map<String, Object> userData) {
+        try {
+            String email = userData.get("email").toString();
+            
+            if (userRepository.findByEmail(email).isPresent()) {
+                return ResponseEntity.badRequest().body("User with this email already exists");
+            }
+            
+            User user = new User();
+            user.setName(userData.get("name").toString());
+            user.setEmail(email);
+            user.setPasswordHash(passwordEncoder.encode(userData.get("password").toString()));
+            user.setPhone(userData.get("phone") != null ? userData.get("phone").toString() : null);
+            user.setRole(userData.get("role") != null ? userData.get("role").toString() : "customer");
+            
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to create user: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> userData) {
+        try {
+            User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            if (userData.get("name") != null) {
+                user.setName(userData.get("name").toString());
+            }
+            if (userData.get("email") != null) {
+                String newEmail = userData.get("email").toString();
+                if (!newEmail.equals(user.getEmail()) && userRepository.findByEmail(newEmail).isPresent()) {
+                    return ResponseEntity.badRequest().body("Email already in use");
+                }
+                user.setEmail(newEmail);
+            }
+            if (userData.get("password") != null && !userData.get("password").toString().isEmpty()) {
+                user.setPasswordHash(passwordEncoder.encode(userData.get("password").toString()));
+            }
+            if (userData.get("phone") != null) {
+                user.setPhone(userData.get("phone").toString());
+            }
+            if (userData.get("role") != null) {
+                user.setRole(userData.get("role").toString());
+            }
+            
+            User savedUser = userRepository.save(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to update user: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/users/{id}")

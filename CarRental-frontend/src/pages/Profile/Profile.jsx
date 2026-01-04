@@ -238,7 +238,7 @@ export default function Profile() {
                 onClick={() => setIsEditing(true)} 
                 className="btn-edit"
               >
-                Edit Profile
+                Edit
               </button>
             )}
           </div>

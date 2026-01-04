@@ -26,6 +26,15 @@ export default function AdminPage() {
   });
   const [carImages, setCarImages] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [userFormData, setUserFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phone: '',
+    role: 'customer'
+  });
 
   useEffect(() => {
     if (activeTab === 'cars') {
@@ -282,10 +291,166 @@ export default function AdminPage() {
     }
   };
 
+  const resetUserForm = () => {
+    setUserFormData({
+      name: '',
+      email: '',
+      password: '',
+      phone: '',
+      role: 'customer'
+    });
+    setShowUserForm(false);
+    setEditingUser(null);
+  };
+
+  const openAddUserForm = () => {
+    resetUserForm();
+    setShowUserForm(true);
+  };
+
+  const openEditUserForm = (user) => {
+    setUserFormData({
+      name: user.name || '',
+      email: user.email || '',
+      password: '',
+      phone: user.phone || '',
+      role: user.role || 'customer'
+    });
+    setEditingUser(user);
+    setShowUserForm(true);
+  };
+
+  const handleSubmitUser = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const isEditing = editingUser !== null;
+      const url = isEditing 
+        ? `http://localhost:8080/api/admin/users/${editingUser.id}`
+        : 'http://localhost:8080/api/admin/users';
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const payload = { ...userFormData };
+      if (isEditing && !payload.password) {
+        delete payload.password;
+      }
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} user`);
+
+      const successMessage = isEditing ? 'User changes saved successfully!' : 'User created successfully!';
+      alert(successMessage);
+      
+      resetUserForm();
+      fetchUsers();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="admin-page">
       <NavBar />
       
+      {/* Add/Edit User Modal */}
+      {showUserForm && (
+        <div className="modal-overlay">
+          <div className="modal-content modal-content-small">
+            <div className="modal-header">
+              <h2>{editingUser ? 'Edit User' : 'Add New User'}</h2>
+              <button className="modal-close" onClick={resetUserForm}>
+                <FaTimes />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmitUser} className="add-car-form">
+              <div className="form-group">
+                <label htmlFor="userName">Full Name *</label>
+                <input
+                  type="text"
+                  id="userName"
+                  value={userFormData.name}
+                  onChange={(e) => setUserFormData({...userFormData, name: e.target.value})}
+                  required
+                  placeholder="e.g. John Doe"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="userEmail">Email *</label>
+                <input
+                  type="email"
+                  id="userEmail"
+                  value={userFormData.email}
+                  onChange={(e) => setUserFormData({...userFormData, email: e.target.value})}
+                  required
+                  placeholder="e.g. john@example.com"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="userPassword">{editingUser ? 'New Password (leave empty to keep current)' : 'Password *'}</label>
+                <input
+                  type="password"
+                  id="userPassword"
+                  value={userFormData.password}
+                  onChange={(e) => setUserFormData({...userFormData, password: e.target.value})}
+                  required={!editingUser}
+                  placeholder="Enter password"
+                  minLength="6"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="userPhone">Phone</label>
+                <input
+                  type="tel"
+                  id="userPhone"
+                  value={userFormData.phone}
+                  onChange={(e) => setUserFormData({...userFormData, phone: e.target.value})}
+                  placeholder="e.g. +40 712 345 678"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="userRole">Role *</label>
+                <select
+                  id="userRole"
+                  value={userFormData.role}
+                  onChange={(e) => setUserFormData({...userFormData, role: e.target.value})}
+                  required
+                >
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancel-form" onClick={resetUserForm} disabled={submitting}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-confirm" disabled={submitting}>
+                  {submitting ? (editingUser ? 'Saving...' : 'Creating...') : (editingUser ? 'Save Changes' : 'Create User')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Add/Edit Car Modal */}
       {showCarForm && (
         <div className="modal-overlay">
@@ -640,7 +805,7 @@ export default function AdminPage() {
             <div className="admin-section">
               <div className="section-header">
                 <h2>Manage Users</h2>
-                <button className="btn-add">+ Add New User</button>
+                <button className="btn-add" onClick={openAddUserForm}>+ Add New User</button>
               </div>
               
               {loading ? (
@@ -676,7 +841,7 @@ export default function AdminPage() {
                               </span>
                             </td>
                             <td>
-                              <button className="btn-edit">Edit</button>
+                              <button className="btn-edit" onClick={() => openEditUserForm(user)}>Edit</button>
                               <button className="btn-delete" onClick={() => deleteUser(user.id)}>
                                 Delete
                               </button>
