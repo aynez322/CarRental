@@ -12,7 +12,8 @@ import { createBooking } from '../../api/booking';
 
 export default function CarBookingModal({ car, onClose }) {
   const [step, setStep] = useState(1);
-  const [location, setLocation] = useState(null);
+  // Pre-select the car's location - user can still change it if needed
+  const [location, setLocation] = useState(car.location || null);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [availability, setAvailability] = useState(null);
   const [loadingCheck, setLoadingCheck] = useState(false);

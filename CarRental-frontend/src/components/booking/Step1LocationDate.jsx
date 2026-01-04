@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import LocationSelector from './LocationSelector';
 import BookingCalendar from './BookingCalendar';
 import { formatDateRange, daysBetween } from '../../utils/date';
 
@@ -19,14 +18,12 @@ export default function Step1LocationDate({
 
   const getValidationMessage = () => {
     const missing = [];
-    if (!location) missing.push('pickup location');
     if (!dateRange.start) missing.push('start date');
     if (!dateRange.end) missing.push('end date');
     
     if (missing.length === 0) return '';
     if (missing.length === 1) return `Please select the ${missing[0]} to continue.`;
-    if (missing.length === 2) return `Please select the ${missing[0]} and ${missing[1]} to continue.`;
-    return `Please select the ${missing[0]}, ${missing[1]}, and ${missing[2]} to continue.`;
+    return `Please select the ${missing[0]} and ${missing[1]} to continue.`;
   };
 
   const handleCheckAvailability = async () => {
@@ -72,11 +69,6 @@ export default function Step1LocationDate({
     ? daysBetween(dateRange.start, dateRange.end) + 1
     : 0;
 
-  const handleLocationSelect = (loc) => {
-    setLocation(loc);
-    setValidationMessage('');
-  };
-
   const handleDateRangeChange = (range) => {
     setDateRange(range);
     setValidationMessage('');
@@ -84,15 +76,13 @@ export default function Step1LocationDate({
 
   return (
     <div className="step step1">
-      <h3>Select Location and Dates</h3>
-      <LocationSelector
-        selectedLocation={location}
-        onSelect={handleLocationSelect}
-        locations={[
-          { id: 'aeroport', label: 'Avram Iancu International Airport Cluj' },
-          { id: 'autogara', label: 'Beta Bus Station Cluj' }
-        ]}
-      />
+      <h3>Select Dates</h3>
+      
+      <div className="location-display">
+        <label>Pickup Location:</label>
+        <span className="location-value">{location || car.location || 'Not specified'}</span>
+      </div>
+
       <BookingCalendar
         dateRange={dateRange}
         setDateRange={handleDateRangeChange}
