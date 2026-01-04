@@ -12,6 +12,10 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserOrderByPickupDateDesc(User user);
     
+    List<Booking> findByCarId(Long carId);
+    
+    void deleteByCarId(Long carId);
+    
     @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.car.id = :carId " +
            "AND b.status IN ('pending', 'active') " +
            "AND ((b.pickupDate <= :endDate AND b.returnDate >= :startDate))")

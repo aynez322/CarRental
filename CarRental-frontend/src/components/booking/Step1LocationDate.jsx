@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LocationSelector from './LocationSelector';
 import BookingCalendar from './BookingCalendar';
 import { formatDateRange, daysBetween } from '../../utils/date';
@@ -15,9 +15,26 @@ export default function Step1LocationDate({
   setLoadingCheck,
   pricePerDay
 }) {
+  const [validationMessage, setValidationMessage] = useState('');
+
+  const getValidationMessage = () => {
+    const missing = [];
+    if (!location) missing.push('pickup location');
+    if (!dateRange.start) missing.push('start date');
+    if (!dateRange.end) missing.push('end date');
+    
+    if (missing.length === 0) return '';
+    if (missing.length === 1) return `Please select the ${missing[0]} to continue.`;
+    if (missing.length === 2) return `Please select the ${missing[0]} and ${missing[1]} to continue.`;
+    return `Please select the ${missing[0]}, ${missing[1]}, and ${missing[2]} to continue.`;
+  };
 
   const handleCheckAvailability = async () => {
-    if (!location || !dateRange.start || !dateRange.end) return;
+    if (!location || !dateRange.start || !dateRange.end) {
+      setValidationMessage(getValidationMessage());
+      return;
+    }
+    setValidationMessage('');
     setLoadingCheck(true);
     setAvailability(null);
 
@@ -55,12 +72,22 @@ export default function Step1LocationDate({
     ? daysBetween(dateRange.start, dateRange.end) + 1
     : 0;
 
+  const handleLocationSelect = (loc) => {
+    setLocation(loc);
+    setValidationMessage('');
+  };
+
+  const handleDateRangeChange = (range) => {
+    setDateRange(range);
+    setValidationMessage('');
+  };
+
   return (
     <div className="step step1">
       <h3>Select Location and Dates</h3>
       <LocationSelector
         selectedLocation={location}
-        onSelect={setLocation}
+        onSelect={handleLocationSelect}
         locations={[
           { id: 'aeroport', label: 'Avram Iancu International Airport Cluj' },
           { id: 'autogara', label: 'Beta Bus Station Cluj' }
@@ -68,13 +95,19 @@ export default function Step1LocationDate({
       />
       <BookingCalendar
         dateRange={dateRange}
-        setDateRange={setDateRange}
+        setDateRange={handleDateRangeChange}
       />
+
+      {validationMessage && (
+        <div className="validation-message warning">
+          {validationMessage}
+        </div>
+      )}
 
       <div className="availability-actions">
         <button
           className="btn-secondary"
-          disabled={!location || !dateRange.start || !dateRange.end || loadingCheck}
+          disabled={loadingCheck}
           onClick={handleCheckAvailability}
         >
           {loadingCheck ? 'Checking...' : 'Check Availability'}

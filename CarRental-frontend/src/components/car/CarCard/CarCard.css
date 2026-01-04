@@ -1,33 +1,103 @@
 .carcard {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid #e6e9ee;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 320px;
-  box-shadow: 0 6px 18px rgba(20,40,80,0.04);
+  min-height: 420px;
+  box-shadow: 0 6px 18px rgba(20,40,80,0.06);
   transition: transform .12s ease, box-shadow .12s ease;
 }
 .carcard:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(20,40,80,0.08);
+  box-shadow: 0 12px 30px rgba(20,40,80,0.12);
 }
 
 .carcard__image {
-  height: 160px;
+  height: 220px;
   background: linear-gradient(180deg, #f8fafc, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 16px;
+  position: relative;
 }
 
 .carcard__image img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+/* Image Navigation */
+.image-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 10;
+  opacity: 0;
+}
+
+.carcard:hover .image-nav-btn {
+  opacity: 1;
+}
+
+.image-nav-btn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.image-nav-btn--prev {
+  left: 10px;
+}
+
+.image-nav-btn--next {
+  right: 10px;
+}
+
+/* Image Indicators (dots) */
+.image-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.image-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.image-indicator:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.image-indicator.active {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
 .carcard__body {
