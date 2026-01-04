@@ -1,9 +1,11 @@
 package com.carrental.service;
 
 import com.carrental.model.Car;
+import com.carrental.repository.BookingRepository;
 import com.carrental.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.List;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final BookingRepository bookingRepository;
 
     public List<Car> getAllCars() {
         return carRepository.findAll();
@@ -32,7 +35,11 @@ public class CarService {
         return carRepository.save(car);
     }
 
+    @Transactional
     public void deleteCar(Long id) {
+        // First delete all bookings associated with this car
+        bookingRepository.deleteByCarId(id);
+        // Then delete the car (images will be deleted via cascade)
         carRepository.deleteById(id);
     }
 

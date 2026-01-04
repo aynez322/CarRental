@@ -1,6 +1,6 @@
 .available-cars-page {
   min-height: 100vh;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #e8f1fb 0%, #cfe5fb 40%, #9fc3ee 100%);
 }
 
 .available-cars-container {
@@ -21,7 +21,7 @@
 }
 
 .available-cars-header p {
-  color: #64748b;
+  color: #1e40af;
   margin: 0;
 }
 

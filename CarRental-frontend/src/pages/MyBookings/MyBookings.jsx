@@ -104,7 +104,7 @@ export default function MyBookings() {
                       <div className="empty-state__icon">📅</div>
                       <h3>No Active Bookings</h3>
                       <p>You don't have any active bookings at the moment.</p>
-                      <button className="btn-primary" onClick={() => navigate('/available-cars')}>Browse Cars</button>
+                      <button className="btn-primary" onClick={() => navigate('/cars')}>Browse Cars</button>
                     </div>
                   ) : (
                     <div className="bookings-list">
