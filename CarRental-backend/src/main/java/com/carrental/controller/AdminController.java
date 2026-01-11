@@ -170,7 +170,6 @@ public class AdminController {
         try {
             Car car = carService.getCarById(carId);
 
-            // Create upload directory if it doesn't exist
             Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -180,17 +179,14 @@ public class AdminController {
             int displayOrder = car.getImages().size();
 
             for (MultipartFile image : images) {
-                // Generate unique filename
                 String originalFilename = image.getOriginalFilename();
                 String extension = originalFilename != null ? 
                     originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
                 String newFilename = UUID.randomUUID().toString() + extension;
 
-                // Save file to disk
                 Path filePath = uploadPath.resolve(newFilename);
                 Files.copy(image.getInputStream(), filePath);
 
-                // Create CarImage entity
                 CarImage carImage = new CarImage();
                 carImage.setCar(car);
                 carImage.setImageUrl("/uploads/cars/" + newFilename);

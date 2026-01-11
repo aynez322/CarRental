@@ -31,7 +31,6 @@
   border-radius: 8px;
 }
 
-/* Image Navigation */
 .image-nav-btn {
   position: absolute;
   top: 50%;
@@ -70,7 +69,6 @@
   right: 10px;
 }
 
-/* Image Indicators (dots) */
 .image-indicators {
   position: absolute;
   bottom: 20px;
@@ -151,7 +149,6 @@
   font-size: 16px;
 }
 
-/* Login error modal */
 .login-error-modal__backdrop {
   position: fixed;
   inset: 0;

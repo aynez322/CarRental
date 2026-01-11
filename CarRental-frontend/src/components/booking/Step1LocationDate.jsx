@@ -36,7 +36,6 @@ export default function Step1LocationDate({
     setAvailability(null);
 
     try {
-      // Format dates as yyyy-MM-dd
       const startDate = dateRange.start.toISOString().split('T')[0];
       const endDate = dateRange.end.toISOString().split('T')[0];
       

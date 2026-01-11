@@ -23,11 +23,7 @@ public class BookingCleanupService {
         this.bookingRepository = bookingRepository;
     }
 
-    /**
-     * Runs every hour to check for pending bookings older than 24 hours
-     * and automatically cancels them.
-     */
-    @Scheduled(fixedRate = 3600000) // Run every hour (3600000 ms)
+    @Scheduled(fixedRate = 3600000)
     @Transactional
     public void cancelStalePendingBookings() {
         LocalDateTime cutoffTime = LocalDateTime.now().minusHours(PENDING_TIMEOUT_HOURS);

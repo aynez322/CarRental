@@ -78,7 +78,6 @@
   overflow: hidden;
 }
 
-/* Left Gallery Section */
 .booking-modal__gallery-section {
   flex: 0 0 55%;
   background: #1e293b;
@@ -239,7 +238,6 @@
   opacity: 0.9;
 }
 
-/* Right Form Section */
 .booking-modal__form-section {
   flex: 0 0 45%;
   background: #f8fafc;
@@ -309,7 +307,6 @@
   cursor: not-allowed;
 }
 
-/* Hide old styles */
 .booking-modal__content,
 .booking-modal__car-info,
 .car-gallery,
@@ -894,7 +891,6 @@
   color: #dc2626;
 }
 
-/* Align label at top for ID photos row */
 .step3 .form-row:has(.license-upload-grid) {
   align-items: flex-start;
 }

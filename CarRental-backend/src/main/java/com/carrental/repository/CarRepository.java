@@ -14,14 +14,6 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findByLocation(String location);
     List<Car> findByLocationIgnoreCase(String location);
 
-    /**
-     * Available cars within an inclusive interval [pickupDate, returnDate].
-     * Overlap blocked if a Booking exists with:
-     *   booking.pickupDate <= :returnDate AND booking.returnDate >= :pickupDate
-     * and status in ('PENDING','ACTIVE').
-     * Location is optional.
-     * Exclude non-operational states (maintenance / rented)
-     */
     @Query("""
         SELECT c
         FROM Car c

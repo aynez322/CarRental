@@ -32,7 +32,6 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Location section with map */}
         <div className="location-section">
           <div className="location-header">
             <IoLocationSharp className="location-icon" />

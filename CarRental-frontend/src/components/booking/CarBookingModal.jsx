@@ -12,7 +12,6 @@ import { createBooking, uploadBookingLicense } from '../../api/booking';
 
 export default function CarBookingModal({ car, onClose }) {
   const [step, setStep] = useState(1);
-  // Pre-select the car's location - user can still change it if needed
   const [location, setLocation] = useState(car.location || null);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [availability, setAvailability] = useState(null);
@@ -32,7 +31,6 @@ export default function CarBookingModal({ car, onClose }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const pricePerDay = car.pricePerDay || car.price || 0;
 
-  // Image handling
   const getFullImageUrl = (url) => {
     if (!url) return '/images/cars/placeholder.jpg';
     if (url.startsWith('http')) return url;
@@ -127,7 +125,6 @@ export default function CarBookingModal({ car, onClose }) {
         </div>
 
         <div className="booking-modal__main">
-          {/* Left side - Car Gallery */}
           <div className="booking-modal__gallery-section">
             <div className="main-image-container">
               {hasMultipleImages && (
@@ -174,7 +171,6 @@ export default function CarBookingModal({ car, onClose }) {
               </div>
             )}
 
-            {/* Car specs under gallery */}
             <div className="car-specs-bar">
               <div className="car-spec">
                 <MdDateRange className="spec-icon" />
@@ -199,7 +195,6 @@ export default function CarBookingModal({ car, onClose }) {
             </div>
           </div>
 
-          {/* Right side - Booking Form */}
           <div className="booking-modal__form-section">
             <div className="booking-modal__steps-indicator">
               <div className={`step-indicator ${step === 1 ? 'active' : ''}`}>1</div>

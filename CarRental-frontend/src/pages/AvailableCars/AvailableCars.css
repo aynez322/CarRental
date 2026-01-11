@@ -33,7 +33,6 @@
   min-height: 400px;
 }
 
-/* Empty State */
 .empty-state {
   display: flex;
   flex-direction: column;

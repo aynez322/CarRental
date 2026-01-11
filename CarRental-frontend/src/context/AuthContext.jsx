@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable no-useless-catch */
 import { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext(null);

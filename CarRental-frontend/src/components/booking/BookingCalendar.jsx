@@ -20,7 +20,7 @@ export default function BookingCalendar({ dateRange, setDateRange }) {
 
   const getFirstDayOfMonth = (month, year) => {
     const day = new Date(year, month, 1).getDay();
-    return day === 0 ? 6 : day - 1; // Adjust so Monday is 0
+    return day === 0 ? 6 : day - 1;
   };
 
   const isSameDay = (d1, d2) => {
@@ -31,7 +31,7 @@ export default function BookingCalendar({ dateRange, setDateRange }) {
   };
 
   const handleSelect = (day) => {
-    if (day < today) return; // Nu permite selecția datelor trecute
+    if (day < today) return;
     
     if (!dateRange.start || (dateRange.start && dateRange.end)) {
       setDateRange({ start: day, end: null });
@@ -79,12 +79,10 @@ export default function BookingCalendar({ dateRange, setDateRange }) {
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
     const cells = [];
 
-    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
       cells.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
     }
 
-    // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day);
       date.setHours(0, 0, 0, 0);

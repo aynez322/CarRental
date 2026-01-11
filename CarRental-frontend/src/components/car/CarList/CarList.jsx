@@ -65,8 +65,8 @@ function CarList({ mode = "filtered", filters = {} }) {
 
     const params = new URLSearchParams();
     if (filters.location) params.append("location", filters.location);
-    if (filters.pickupDate) params.append("pickupDate", filters.pickupDate); // YYYY-MM-DD
-    if (filters.returnDate) params.append("returnDate", filters.returnDate); // YYYY-MM-DD
+    if (filters.pickupDate) params.append("pickupDate", filters.pickupDate);
+    if (filters.returnDate) params.append("returnDate", filters.returnDate);
 
     const url = `${API_BASE}/cars${params.toString() ? `?${params.toString()}` : ""}`;
     console.log("FETCH cars (FILTERED) URL:", url);

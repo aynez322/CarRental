@@ -123,7 +123,6 @@ public class BookingController {
             Car car = carRepository.findById(carId)
                     .orElseThrow(() -> new RuntimeException("Car not found"));
 
-            // Calculate total price
             long days = ChronoUnit.DAYS.between(pickupDate, returnDate);
             if (days <= 0) days = 1;
             BigDecimal totalPrice = BigDecimal.valueOf(car.getPricePerDay() * days);
@@ -142,7 +141,6 @@ public class BookingController {
             booking.setDriverLicenseFrontUrl(driverLicenseFrontUrl);
             booking.setDriverLicenseBackUrl(driverLicenseBackUrl);
 
-            // If user is authenticated, link the booking to the user
             if (authentication != null && authentication.isAuthenticated()) {
                 String email = authentication.getName();
                 User user = userRepository.findByEmail(email).orElse(null);
@@ -180,7 +178,6 @@ public class BookingController {
             Booking booking = bookingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-            // Check if the booking belongs to the authenticated user
             if (authentication != null && authentication.isAuthenticated()) {
                 String email = authentication.getName();
                 if (booking.getUser() == null || !booking.getUser().getEmail().equals(email)) {

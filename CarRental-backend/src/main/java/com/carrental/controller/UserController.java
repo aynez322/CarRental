@@ -55,22 +55,18 @@ public class UserController {
             User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Update basic info
             user.setName(request.getName());
             user.setPhone(request.getPhone());
 
-            // Update password if provided
             if (request.getNewPassword() != null && !request.getNewPassword().isEmpty()) {
                 if (request.getCurrentPassword() == null || request.getCurrentPassword().isEmpty()) {
                     return ResponseEntity.badRequest().body("Current password is required to change password");
                 }
 
-                // Verify current password
                 if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
                     return ResponseEntity.badRequest().body("Current password is incorrect");
                 }
 
-                // Set new password
                 user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
             }
 

@@ -265,7 +265,6 @@ export default function AdminPage() {
       if (!carResponse.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} car`);
       const savedCar = await carResponse.json();
 
-      // If there are new images, upload them
       if (carImages.length > 0) {
         const formData = new FormData();
         carImages.forEach(image => {
@@ -382,7 +381,6 @@ export default function AdminPage() {
     <div className="admin-page">
       <NavBar />
       
-      {/* Add/Edit User Modal */}
       {showUserForm && (
         <div className="modal-overlay">
           <div className="modal-content modal-content-small">
@@ -468,7 +466,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Add/Edit Car Modal */}
       {showCarForm && (
         <div className="modal-overlay">
           <div className="modal-content">

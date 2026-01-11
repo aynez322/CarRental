@@ -42,7 +42,6 @@ export default function CarCard({ car }) {
     navigate('/login');
   };
 
-  // Build array of image URLs - add backend URL for uploaded images
   const getFullImageUrl = (url) => {
     if (!url) return '/images/cars/placeholder.jpg';
     if (url.startsWith('http')) return url;

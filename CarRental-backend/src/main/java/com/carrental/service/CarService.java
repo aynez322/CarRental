@@ -37,19 +37,10 @@ public class CarService {
 
     @Transactional
     public void deleteCar(Long id) {
-        // First delete all bookings associated with this car
         bookingRepository.deleteByCarId(id);
-        // Then delete the car (images will be deleted via cascade)
         carRepository.deleteById(id);
     }
 
-    /**
-     * Search logic:
-     * Without pickup/return -> all cars (or filter by location only).
-     * Location only -> filter by location.
-     * Only one date (pickup or return) -> ignore availability filtering (return as if no interval given).
-     * Both dates (+ optional location) -> only available cars (without overlapping bookings).
-     */
     public List<Car> search(String location, LocalDate pickupDate, LocalDate returnDate) {
         boolean hasPickup = pickupDate != null;
         boolean hasReturn = returnDate != null;

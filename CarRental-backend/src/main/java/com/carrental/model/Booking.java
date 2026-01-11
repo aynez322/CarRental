@@ -39,7 +39,7 @@ public class Booking {
     private BigDecimal totalPrice;
 
     @Column(name = "status", length = 20, nullable = false)
-    private String status; // PENDING, CONFIRMED, CANCELLED etc.
+    private String status;
 
     @Column(name = "customer_name", length = 100)
     private String customerName;
