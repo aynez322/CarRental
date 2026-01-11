@@ -27,8 +27,16 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || 'Login failed');
+        const errorData = await response.json().catch(() => null);
+        if (errorData) {
+          // Handle structured error response
+          const message = errorData.message || errorData.error || 'Login failed';
+          const error = new Error(message);
+          error.attemptsRemaining = errorData.attemptsRemaining;
+          error.retryAfterSeconds = errorData.retryAfterSeconds;
+          throw error;
+        }
+        throw new Error('Login failed');
       }
 
       const data = await response.json();
@@ -65,8 +73,13 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || 'Registration failed');
+        const errorData = await response.json().catch(() => null);
+        if (errorData) {
+          const message = errorData.message || errorData.error || 'Registration failed';
+          throw new Error(message);
+        }
+        const errorText = await response.text();
+        throw new Error(errorText || 'Registration failed');
       }
 
       const data = await response.json();

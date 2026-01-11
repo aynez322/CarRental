@@ -159,8 +159,8 @@ export default function AdminPage() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8080/api/admin/bookings/${id}`, {
-        method: 'DELETE',
+      const response = await fetch(`http://localhost:8080/api/admin/bookings/${id}/cancel`, {
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
         }
