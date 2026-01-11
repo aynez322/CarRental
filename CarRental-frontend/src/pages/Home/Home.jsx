@@ -19,7 +19,7 @@ export default function Home() {
   function onSearch(e) {
     e.preventDefault();
     if (filters.pickupDate && filters.returnDate && filters.returnDate < filters.pickupDate) {
-      alert('Return date nu poate fi înainte de pickup date.');
+      alert('Return date cannot be before pickup date.');
       return;
     }
     const params = new URLSearchParams();

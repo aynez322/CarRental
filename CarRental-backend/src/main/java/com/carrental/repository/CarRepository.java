@@ -15,12 +15,12 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findByLocationIgnoreCase(String location);
 
     /**
-     * Mașini disponibile într-un interval inclusiv [pickupDate, returnDate].
-     * Suprapunere blocată dacă există Booking cu:
+     * Available cars within an inclusive interval [pickupDate, returnDate].
+     * Overlap blocked if a Booking exists with:
      *   booking.pickupDate <= :returnDate AND booking.returnDate >= :pickupDate
-     * și status in ('PENDING','CONFIRMED'(!!!!Doina,trebuie schimbat in baza de date)).
-     * Location este opțional.
-     * Exclud stări non‑operational (maintenance / rented)
+     * and status in ('PENDING','ACTIVE').
+     * Location is optional.
+     * Exclude non-operational states (maintenance / rented)
      */
     @Query("""
         SELECT c

@@ -44,11 +44,11 @@ public class CarService {
     }
 
     /**
-     * Logica de căutare:
-     * Fără pickup/return -> toate (sau doar filtrare pe location).
-     * Doar location -> filtrare după location.
-     * Doar una din date (pickup sau return) -> ignorăm filtrarea pe disponibilitate (returnăm ca și cum nu ai dat interval).
-     * Ambele date (+ optional location) -> doar mașinile disponibile (fără booking suprapus).
+     * Search logic:
+     * Without pickup/return -> all cars (or filter by location only).
+     * Location only -> filter by location.
+     * Only one date (pickup or return) -> ignore availability filtering (return as if no interval given).
+     * Both dates (+ optional location) -> only available cars (without overlapping bookings).
      */
     public List<Car> search(String location, LocalDate pickupDate, LocalDate returnDate) {
         boolean hasPickup = pickupDate != null;
@@ -69,7 +69,7 @@ public class CarService {
         }
 
         if (returnDate.isBefore(pickupDate)) {
-            throw new IllegalArgumentException("Return date nu poate fi înainte de pickup date.");
+            throw new IllegalArgumentException("Return date cannot be before pickup date.");
         }
 
         return carRepository.findAvailable(

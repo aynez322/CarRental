@@ -136,11 +136,11 @@ export default function CarCard({ car }) {
       {showLoginError && (
         <div className="login-error-modal__backdrop" onClick={() => setShowLoginError(false)}>
           <div className="login-error-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Autentificare necesară</h3>
-            <p>Trebuie să fii logat pentru a face o rezervare.</p>
+            <h3>Authentication Required</h3>
+            <p>You must be logged in to make a booking.</p>
             <div className="login-error-modal__actions">
-              <button className="btn-secondary" onClick={() => setShowLoginError(false)}>Închide</button>
-              <button className="btn-primary" onClick={handleGoToLogin}>Conectează-te</button>
+              <button className="btn-secondary" onClick={() => setShowLoginError(false)}>Close</button>
+              <button className="btn-primary" onClick={handleGoToLogin}>Login</button>
             </div>
           </div>
         </div>

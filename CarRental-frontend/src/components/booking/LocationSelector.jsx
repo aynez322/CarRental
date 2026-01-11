@@ -3,7 +3,7 @@ import React from 'react';
 export default function LocationSelector({ locations, selectedLocation, onSelect }) {
   return (
     <div className="location-selector">
-      <h4>Locație pick-up:</h4>
+      <h4>Pickup Location:</h4>
       <div className="location-options">
         {locations.map(loc => (
           <label

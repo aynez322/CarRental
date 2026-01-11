@@ -150,20 +150,20 @@ export default function Step3CustomerForm({
             type="text"
             value={clientData.idnp || ''}
             onChange={handleChange}
-            placeholder="Introduceți CNP-ul (13 cifre)"
+            placeholder="Enter CNP (13 digits)"
             inputMode="numeric"
             maxLength={13}
             autoComplete="off"
             required
           />
           {showValidation && clientData.idnp && clientData.idnp.length !== 13 && (
-            <span className="form-field-error">CNP trebuie să aibă exact 13 cifre</span>
+            <span className="form-field-error">CNP must be exactly 13 digits</span>
           )}
         </div>
 
         <div className="form-row">
           <label className={showValidation && (!clientData.licenseFrontFile || !clientData.licenseBackFile) ? 'form-label--error' : ''}>
-            ID photos (both sides)
+            ID (both sides)
           </label>
 
           <div className="license-upload-grid">

@@ -109,7 +109,7 @@ function CarList({ mode = "filtered", filters = {} }) {
     <div id="cars" className="car-list">
       <h2>{mode === "all" ? "Featured cars" : "Available Cars"}</h2>
       {loading && <div className="carlist__loading">Loading cars...</div>}
-      {!loading && err && <div className="carlist__error">Eroare: {err}</div>}
+      {!loading && err && <div className="carlist__error">Error: {err}</div>}
       {!loading && !cars.length && <div className="carlist__empty">No cars available.</div>}
       {!loading && cars.length > 0 && (
         <div className="car-grid">
