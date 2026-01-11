@@ -8,7 +8,7 @@ import Step1LocationDate from './Step1LocationDate';
 import Step2Summary from './Step2Summary';
 import Step3CustomerForm from './Step3CustomerForm';
 import './bookingStyles.css';
-import { createBooking } from '../../api/booking';
+import { createBooking, uploadBookingLicense } from '../../api/booking';
 
 export default function CarBookingModal({ car, onClose }) {
   const [step, setStep] = useState(1);
@@ -21,7 +21,10 @@ export default function CarBookingModal({ car, onClose }) {
     firstName: '',
     lastName: '',
     email: '',
-    phone: ''
+    phone: '',
+    idnp: '',
+    licenseFrontFile: null,
+    licenseBackFile: null
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -72,6 +75,14 @@ export default function CarBookingModal({ car, onClose }) {
     if (!acceptTerms) return;
     setSubmitting(true);
     try {
+      if (!clientData.idnp || !clientData.licenseFrontFile || !clientData.licenseBackFile) {
+        alert('Please provide IDNP and both driver license photos (front and back).');
+        return;
+      }
+
+      const frontUpload = await uploadBookingLicense(clientData.licenseFrontFile);
+      const backUpload = await uploadBookingLicense(clientData.licenseBackFile);
+
       const bookingData = {
         carId: car.id,
         pickupLocation: location,
@@ -79,7 +90,10 @@ export default function CarBookingModal({ car, onClose }) {
         returnDate: formatDate(dateRange.end),
         customerName: `${clientData.firstName} ${clientData.lastName}`,
         customerEmail: clientData.email,
-        customerPhone: clientData.phone
+        customerPhone: clientData.phone,
+        idnp: clientData.idnp,
+        driverLicenseFrontUrl: frontUpload.url,
+        driverLicenseBackUrl: backUpload.url
       };
 
       await createBooking(bookingData);
@@ -95,8 +109,14 @@ export default function CarBookingModal({ car, onClose }) {
     }
   };
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="booking-modal__backdrop">
+    <div className="booking-modal__backdrop" onClick={handleBackdropClick}>
       <div className="booking-modal__container">
         <div className="booking-modal__header">
           <div className="header-title">

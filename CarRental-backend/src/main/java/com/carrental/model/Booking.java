@@ -50,6 +50,15 @@ public class Booking {
     @Column(name = "customer_phone", length = 20)
     private String customerPhone;
 
+    @Column(name = "idnp", length = 13)
+    private String idnp;
+
+    @Column(name = "driver_license_front_url", length = 255)
+    private String driverLicenseFrontUrl;
+
+    @Column(name = "driver_license_back_url", length = 255)
+    private String driverLicenseBackUrl;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

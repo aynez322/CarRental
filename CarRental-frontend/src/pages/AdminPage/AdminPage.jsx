@@ -47,6 +47,14 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  const toAbsoluteUrl = (url) => {
+    if (!url) return '';
+    if (typeof url !== 'string') return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (url.startsWith('/')) return `http://localhost:8080${url}`;
+    return `http://localhost:8080/${url}`;
+  };
+
   const fetchCars = async () => {
     setLoading(true);
     try {
@@ -764,6 +772,8 @@ export default function AdminPage() {
                         <th>Pickup</th>
                         <th>Return</th>
                         <th>Location</th>
+                        <th>CNP</th>
+                        <th>Driver License</th>
                         <th>Total</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -772,7 +782,7 @@ export default function AdminPage() {
                     <tbody>
                       {bookings.length === 0 ? (
                         <tr>
-                          <td colSpan="10" style={{ textAlign: 'center' }}>No bookings found</td>
+                          <td colSpan="12" style={{ textAlign: 'center' }}>No bookings found</td>
                         </tr>
                       ) : (
                         bookings.map(booking => (
@@ -784,6 +794,48 @@ export default function AdminPage() {
                             <td>{new Date(booking.pickupDate).toLocaleDateString()}</td>
                             <td>{new Date(booking.returnDate).toLocaleDateString()}</td>
                             <td>{booking.pickupLocation}</td>
+                            <td>{booking.idnp || '—'}</td>
+                            <td>
+                              <div className="license-thumbs">
+                                {booking.driverLicenseFrontUrl ? (
+                                  <a
+                                    href={toAbsoluteUrl(booking.driverLicenseFrontUrl)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="license-thumb-link"
+                                    title="Driver license (front)"
+                                  >
+                                    <img
+                                      className="license-thumb"
+                                      src={toAbsoluteUrl(booking.driverLicenseFrontUrl)}
+                                      alt="Driver license front"
+                                      loading="lazy"
+                                    />
+                                  </a>
+                                ) : (
+                                  <span className="license-thumb-empty">Front —</span>
+                                )}
+
+                                {booking.driverLicenseBackUrl ? (
+                                  <a
+                                    href={toAbsoluteUrl(booking.driverLicenseBackUrl)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="license-thumb-link"
+                                    title="Driver license (back)"
+                                  >
+                                    <img
+                                      className="license-thumb"
+                                      src={toAbsoluteUrl(booking.driverLicenseBackUrl)}
+                                      alt="Driver license back"
+                                      loading="lazy"
+                                    />
+                                  </a>
+                                ) : (
+                                  <span className="license-thumb-empty">Back —</span>
+                                )}
+                              </div>
+                            </td>
                             <td>${booking.totalPrice}</td>
                             <td>
                               <span className={`status-badge status-${booking.status.toLowerCase()}`}>

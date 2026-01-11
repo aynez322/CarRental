@@ -1,6 +1,6 @@
 .profile-page {
   min-height: 100vh;
-  background: #f1f6fb;
+  background: transparent;
   padding: 0;
 }
 
@@ -131,6 +131,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  min-width: 130px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-edit {

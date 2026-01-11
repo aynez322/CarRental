@@ -10,8 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -31,6 +36,41 @@ public class BookingController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @PostMapping("/upload-license")
+    public ResponseEntity<?> uploadLicense(@RequestParam("file") MultipartFile file) {
+        try {
+            if (file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body("No file provided");
+            }
+
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.toLowerCase().startsWith("image/")) {
+                return ResponseEntity.badRequest().body("Only image files are allowed");
+            }
+
+            Path uploadPath = Paths.get("uploads", "licenses");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFilename = file.getOriginalFilename();
+            String extension = ".jpg";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            String newFilename = UUID.randomUUID() + extension;
+            Path filePath = uploadPath.resolve(newFilename);
+            Files.copy(file.getInputStream(), filePath);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("url", "/uploads/licenses/" + newFilename);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to upload license image: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/check-availability")
     public ResponseEntity<?> checkAvailability(
@@ -66,6 +106,20 @@ public class BookingController {
             String customerEmail = bookingData.get("customerEmail").toString();
             String customerPhone = bookingData.get("customerPhone").toString();
 
+            String idnp = bookingData.get("idnp") != null ? bookingData.get("idnp").toString().trim() : "";
+            String driverLicenseFrontUrl = bookingData.get("driverLicenseFrontUrl") != null ? bookingData.get("driverLicenseFrontUrl").toString().trim() : "";
+            String driverLicenseBackUrl = bookingData.get("driverLicenseBackUrl") != null ? bookingData.get("driverLicenseBackUrl").toString().trim() : "";
+
+            if (idnp.isEmpty()) {
+                return ResponseEntity.badRequest().body("CNP is required");
+            }
+            if (idnp.length() != 13) {
+                return ResponseEntity.badRequest().body("CNP must have exactly 13 digits");
+            }
+            if (driverLicenseFrontUrl.isEmpty() || driverLicenseBackUrl.isEmpty()) {
+                return ResponseEntity.badRequest().body("Driver license photos (front and back) are required");
+            }
+
             Car car = carRepository.findById(carId)
                     .orElseThrow(() -> new RuntimeException("Car not found"));
 
@@ -84,6 +138,9 @@ public class BookingController {
             booking.setCustomerName(customerName);
             booking.setCustomerEmail(customerEmail);
             booking.setCustomerPhone(customerPhone);
+            booking.setIdnp(idnp);
+            booking.setDriverLicenseFrontUrl(driverLicenseFrontUrl);
+            booking.setDriverLicenseBackUrl(driverLicenseBackUrl);
 
             // If user is authenticated, link the booking to the user
             if (authentication != null && authentication.isAuthenticated()) {
