@@ -127,23 +127,25 @@
   box-shadow: 0 4px 12px rgba(58, 192, 183, 0.3);
 }
 
-.btn-edit,
-.btn-view,
-.btn-delete,
-.btn-cancel {
-  color: white;
-  border: none;
-  padding: 0;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
+.admin-page .btn-edit,
+.admin-page .btn-view,
+.admin-page .btn-delete,
+.admin-page .btn-cancel,
+.admin-page .btn-approve {
+  color: white !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   margin-right: 8px;
   transition: all 0.2s;
   font-family: 'Inter', system-ui, Arial, sans-serif;
-  width: 75px;
-  height: 32px;
-  display: inline-flex;
+  width: auto !important;
+  min-width: unset !important;
+  height: 32px !important;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -153,31 +155,31 @@
   vertical-align: middle;
 }
 
-.btn-edit {
+.admin-page .btn-edit {
   background: #2563eb;
 }
 
-.btn-edit:hover {
+.admin-page .btn-edit:hover {
   background: #1d4ed8;
   transform: translateY(-1px);
 }
 
-.btn-view {
+.admin-page .btn-view {
   background: #3ac0b7;
 }
 
-.btn-view:hover {
+.admin-page .btn-view:hover {
   background: #2ea89f;
   transform: translateY(-1px);
 }
 
-.btn-delete,
-.btn-cancel {
+.admin-page .btn-delete,
+.admin-page .btn-cancel {
   background: #ef4444;
 }
 
-.btn-delete:hover,
-.btn-cancel:hover {
+.admin-page .btn-delete:hover,
+.admin-page .btn-cancel:hover {
   background: #dc2626;
   transform: translateY(-1px);
 }
@@ -333,37 +335,13 @@ tbody tr:hover {
   justify-content: flex-start;
 }
 
-.btn-approve {
+.admin-page .btn-approve {
   background: #10b981;
-  color: white;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  width: 85px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.btn-approve:hover {
+.admin-page .btn-approve:hover {
   background: #059669;
   transform: translateY(-1px);
-}
-
-.btn-cancel {
-  white-space: nowrap;
-  padding: 6px 16px;
-  width: 85px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .status-select {
