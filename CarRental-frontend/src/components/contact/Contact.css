@@ -105,3 +105,49 @@
   }
   .contact-header h2 { font-size: 22px; }
 }
+
+/* Location section */
+.location-section {
+  margin-top: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 14px 40px rgba(16,24,40,0.08);
+}
+
+.location-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.location-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #08304f;
+}
+
+.location-icon {
+  font-size: 26px;
+  color: #dc2626;
+}
+
+.location-subtitle {
+  margin: 0 0 20px;
+  font-size: 15px;
+  color: rgba(3, 6, 23, 0.75);
+}
+
+.location-map {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.location-map iframe {
+  display: block;
+}

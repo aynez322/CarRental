@@ -322,7 +322,6 @@
 .booking-modal__footer {
   display: none !important;
 }
-}
 
 .car-price-display .price-period {
   font-size: 0.9rem;
@@ -847,6 +846,98 @@
   color: #9cb9d1;
   opacity: 1;
 }
+
+.form-label--error {
+  color: #dc2626;
+}
+
+.form-field-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+
+.license-upload-grid {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.license-upload-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.license-upload-input {
+  display: none;
+}
+
+.license-upload-box {
+  position: relative;
+  width: 140px;
+  height: 95px;
+  border-radius: 10px;
+  border: 2px dashed rgba(255, 255, 255, 0.65);
+  background: rgba(2, 6, 23, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  padding: 0;
+  overflow: hidden;
+}
+
+.license-upload-box:hover {
+  border-color: rgba(37, 99, 235, 0.9);
+}
+
+.license-upload-box--error {
+  border-color: #dc2626;
+}
+
+.license-upload-box--filled {
+  border-style: solid;
+  border-color: rgba(37, 99, 235, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.license-upload-plus {
+  position: absolute;
+  z-index: 2;
+  font-size: 48px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.license-upload-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  opacity: 0.45;
+  z-index: 1;
+}
+
+.license-upload-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.license-upload-caption {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
 
 .files-preview {
   display: flex;

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import NavBar from '../../components/common/NavBar/NavBar';
 import './AvailableCars.css';
 import CarList from '../../components/car/CarList/CarList';
+import Contact from '../../components/contact/Contact';
 
 export function AvailableCars() {
   const { search } = useLocation();
@@ -28,6 +29,9 @@ export function AvailableCars() {
         <div className="available-cars-content">
           <CarList mode="filtered" filters={filters} />
         </div>
+      </div>
+      <div id="contact">
+        <Contact />
       </div>
     </div>
   );

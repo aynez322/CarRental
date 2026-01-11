@@ -29,6 +29,10 @@ export default function NavBar() {
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
@@ -49,8 +53,8 @@ export default function NavBar() {
         </div>
 
         <nav className="nav__links">
-          <Link to="/" className="nav__link">Home</Link>
-          <Link to="/cars" className="nav__link">Cars</Link>
+          <Link to="/" className="nav__link" onClick={scrollToTop}>Home</Link>
+          <Link to="/cars" className="nav__link" onClick={scrollToTop}>Cars</Link>
           
           <button 
             onClick={() => scrollToSection('contact')} 

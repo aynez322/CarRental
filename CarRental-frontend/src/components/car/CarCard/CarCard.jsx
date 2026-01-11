@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MdDateRange } from 'react-icons/md';
 import { BsFuelPumpFill } from 'react-icons/bs';
 import { TbManualGearbox } from 'react-icons/tb';
 import { IoMdPeople } from 'react-icons/io';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import CarBookingModal from '../../booking/CarBookingModal';
+import { useAuth } from '../../../context/AuthContext';
 import './CarCard.css';
 
 export default function CarCard({ car }) {
@@ -24,6 +26,21 @@ export default function CarCard({ car }) {
 
   const [showBooking, setShowBooking] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showLoginError, setShowLoginError] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleBookClick = () => {
+    if (!isAuthenticated) {
+      setShowLoginError(true);
+      return;
+    }
+    setShowBooking(true);
+  };
+
+  const handleGoToLogin = () => {
+    navigate('/login');
+  };
 
   // Build array of image URLs - add backend URL for uploaded images
   const getFullImageUrl = (url) => {
@@ -110,11 +127,24 @@ export default function CarCard({ car }) {
             <div className="carcard__footer">
               <div className="carcard__price">{formattedPrice} $/day</div>
               <div>
-                <button className="btn-primary" onClick={() => setShowBooking(true)}>Book</button>
+                <button className="btn-primary" onClick={handleBookClick}>Book</button>
               </div>
             </div>
         </div>
       </div>
+
+      {showLoginError && (
+        <div className="login-error-modal__backdrop" onClick={() => setShowLoginError(false)}>
+          <div className="login-error-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Autentificare necesară</h3>
+            <p>Trebuie să fii logat pentru a face o rezervare.</p>
+            <div className="login-error-modal__actions">
+              <button className="btn-secondary" onClick={() => setShowLoginError(false)}>Închide</button>
+              <button className="btn-primary" onClick={handleGoToLogin}>Conectează-te</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showBooking && (
         <CarBookingModal
