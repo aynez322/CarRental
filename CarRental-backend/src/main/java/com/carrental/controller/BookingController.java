@@ -9,6 +9,7 @@ import com.carrental.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -27,6 +29,8 @@ import java.util.Map;
 @RequestMapping("/api/bookings")
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class BookingController {
+
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(".jpg", ".jpeg", ".png", ".gif", ".webp");
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -57,7 +61,10 @@ public class BookingController {
             String originalFilename = file.getOriginalFilename();
             String extension = ".jpg";
             if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String extractedExt = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+                if (ALLOWED_EXTENSIONS.contains(extractedExt)) {
+                    extension = extractedExt;
+                }
             }
 
             String newFilename = UUID.randomUUID() + extension;
@@ -96,6 +103,7 @@ public class BookingController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<?> createBooking(@RequestBody Map<String, Object> bookingData, Authentication authentication) {
         try {
             Long carId = Long.parseLong(bookingData.get("carId").toString());
@@ -110,11 +118,17 @@ public class BookingController {
             String driverLicenseFrontUrl = bookingData.get("driverLicenseFrontUrl") != null ? bookingData.get("driverLicenseFrontUrl").toString().trim() : "";
             String driverLicenseBackUrl = bookingData.get("driverLicenseBackUrl") != null ? bookingData.get("driverLicenseBackUrl").toString().trim() : "";
 
+            if (pickupDate.isBefore(LocalDate.now())) {
+                return ResponseEntity.badRequest().body("Pickup date cannot be in the past");
+            }
+            if (returnDate.isBefore(pickupDate)) {
+                return ResponseEntity.badRequest().body("Return date must be after pickup date");
+            }
             if (idnp.isEmpty()) {
                 return ResponseEntity.badRequest().body("CNP is required");
             }
-            if (idnp.length() != 13) {
-                return ResponseEntity.badRequest().body("CNP must have exactly 13 digits");
+            if (idnp.length() != 13 || !idnp.matches("\\d{13}")) {
+                return ResponseEntity.badRequest().body("CNP must be exactly 13 digits");
             }
             if (driverLicenseFrontUrl.isEmpty() || driverLicenseBackUrl.isEmpty()) {
                 return ResponseEntity.badRequest().body("Driver license photos (front and back) are required");
@@ -123,7 +137,21 @@ public class BookingController {
             Car car = carRepository.findById(carId)
                     .orElseThrow(() -> new RuntimeException("Car not found"));
 
+            // Check car status - only available cars can be booked
+            if (!"available".equalsIgnoreCase(car.getStatus())) {
+                return ResponseEntity.badRequest().body("Car is not available for booking (status: " + car.getStatus() + ")");
+            }
+
+            boolean hasConflict = bookingRepository.existsActiveBookingForCarInDateRange(carId, pickupDate, returnDate);
+            if (hasConflict) {
+                return ResponseEntity.badRequest().body("Car is not available for the selected dates");
+            }
+
             long days = ChronoUnit.DAYS.between(pickupDate, returnDate);
+            // Minimum 1 day booking duration
+            if (days < 1) {
+                return ResponseEntity.badRequest().body("Minimum booking duration is 1 day");
+            }
             if (days <= 0) days = 1;
             BigDecimal totalPrice = BigDecimal.valueOf(car.getPricePerDay() * days);
 
@@ -145,6 +173,12 @@ public class BookingController {
                 String email = authentication.getName();
                 User user = userRepository.findByEmail(email).orElse(null);
                 booking.setUser(user);
+                
+                // Check for duplicate booking by same user for same car in overlapping dates
+                if (user != null && bookingRepository.existsUserBookingForCarInDateRange(
+                        user.getId(), carId, pickupDate, returnDate)) {
+                    return ResponseEntity.badRequest().body("You already have an active booking for this car during the selected dates");
+                }
             }
 
             Booking savedBooking = bookingRepository.save(booking);
@@ -175,14 +209,28 @@ public class BookingController {
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> cancelBooking(@PathVariable Long id, Authentication authentication) {
         try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(401).body("Authentication required");
+            }
+
             Booking booking = bookingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-            if (authentication != null && authentication.isAuthenticated()) {
-                String email = authentication.getName();
-                if (booking.getUser() == null || !booking.getUser().getEmail().equals(email)) {
-                    return ResponseEntity.status(403).body("Forbidden");
-                }
+            String email = authentication.getName();
+            if (booking.getUser() == null || !booking.getUser().getEmail().equals(email)) {
+                return ResponseEntity.status(403).body("Forbidden");
+            }
+
+            String currentStatus = booking.getStatus().toLowerCase();
+            if ("cancelled".equals(currentStatus) || "completed".equals(currentStatus)) {
+                return ResponseEntity.badRequest().body("Booking cannot be cancelled");
+            }
+
+            // Prevent cancellation within 24 hours of pickup date
+            LocalDate today = LocalDate.now();
+            long daysUntilPickup = ChronoUnit.DAYS.between(today, booking.getPickupDate());
+            if (daysUntilPickup < 1) {
+                return ResponseEntity.badRequest().body("Cannot cancel booking within 24 hours of pickup date. Please contact support.");
             }
 
             booking.setStatus("cancelled");
