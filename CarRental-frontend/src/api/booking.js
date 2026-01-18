@@ -28,7 +28,8 @@ export async function getMyBookings() {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch bookings');
+    const error = await response.text();
+    throw new Error(error || 'Failed to fetch bookings');
   }
 
   return await response.json();
@@ -44,7 +45,8 @@ export async function cancelBooking(bookingId) {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to cancel booking');
+    const error = await response.text();
+    throw new Error(error || 'Failed to cancel booking');
   }
 
   return await response.json();
